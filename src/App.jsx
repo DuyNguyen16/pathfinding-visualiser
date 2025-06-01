@@ -13,7 +13,10 @@ function App() {
     const [isMovingEnd, setIsMovingEnd] = useState(false);
     const [startPos, setStartPos] = useState([0, 0]);
     const [endPos, setEndPos] = useState([0, 0]);
-    const [algorithms, setAlgorithms] = useState(["Breadth-first Search"]);
+    const [algorithms, setAlgorithms] = useState("");
+    const [running, setRunning] = useState(false);
+
+    const algoList = ["Breadth-first Search", "Depth-first Search", "Dijkstra's Algorithm","A* Search"];
 
     useEffect(() => {
         const screenWidth = window.innerWidth;
@@ -24,29 +27,15 @@ function App() {
 
         const newGrid = Array.from({ length: rows }, () => Array(cols).fill(0));
         const midRow = Math.floor(rows / 2) - 1;
-        const midRowEndCol = cols - 6;
-        newGrid[midRow][4] = 2;
+        const midRowEndCol = Math.floor(cols/1.5);
+
+        newGrid[midRow][Math.floor(cols/4)] = 2;
         newGrid[midRow][midRowEndCol] = 3;
+
         setEndPos([midRow, midRowEndCol]);
-        setStartPos([midRow, 4]);
+        setStartPos([midRow, Math.floor(cols/4)]);
         setGrid(newGrid);
     }, []);
-
-    const clearGrid = () => {
-        setGrid((prevGrid) =>
-            prevGrid.map((row, rIdx) =>
-                row.map((cell, cIdx) =>
-                    rIdx === startPos[0] && cIdx === startPos[1]
-                        ? 2
-                        : rIdx === endPos[0] && cIdx === endPos[1]
-                        ? 3
-                        : 0
-                )
-            )
-        );
-    };
-
-    
 
     // Toggle move node mode
     const toggleMoveStart = () => {
@@ -74,7 +63,9 @@ function App() {
         setAlgorithms,
         toggleMoveStart,
         toggleMoveEnd,
-        clearGrid,
+        algoList,
+        running, 
+        setRunning,
     };
 
     return (

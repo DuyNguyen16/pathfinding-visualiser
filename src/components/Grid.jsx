@@ -92,16 +92,16 @@ const Grid = () => {
                             }}
                             className={`border border-gray-300 ${
                                 cell === 0
-                                    ? "bg-gray-100"
+                                    ? "bg-gray-100" //normal state
                                     : cell === 1
-                                    ? "bg-[#260F01]"
+                                    ? "bg-[#260F01]" // wall state
                                     : cell === 2 
-                                    ? "bg-gray-100"
+                                    ? "bg-[#BFA98E]" // start node state
                                     : cell === 3
-                                    ? "bg-gray-100"
+                                    ? "bg-[#BFA98E]" // end node state
                                     : cell === 4
-                                    ? "bg-[#8C6D51]"
-                                    :"bg-[#BFA98E]"
+                                    ? "bg-[#8C6D51]" // finding state
+                                    :"bg-[#BFA98E]" // final path state
                             }`}
                             style={{
                                 width: CELL_SIZE,
