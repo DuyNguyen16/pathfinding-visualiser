@@ -1,21 +1,21 @@
 import { useState, useEffect, useContext } from "react";
 import { mainContext } from "../App";
+import knightIcon from "../assets/knight.png";
+import princessIcon from "../assets/princess.png";
+
 
 const CELL_SIZE = 30;
 
 const Grid = () => {
     const c = useContext(mainContext);
-
     const [isMouseDown, setIsMouseDown] = useState(false);
 
-    // Release mouse anywhere
     useEffect(() => {
         const handleMouseUp = () => setIsMouseDown(false);
         window.addEventListener("mouseup", handleMouseUp);
         return () => window.removeEventListener("mouseup", handleMouseUp);
     }, []);
 
-    // Remove previous node (2) and place node at new location
     const placeNode = (rowIndex, colIndex) => {
         c.setGrid((prevGrid) => {
             let n = 0;
@@ -27,41 +27,33 @@ const Grid = () => {
                 n = 3;
             }
 
-            if (cellValue == 2 || cellValue == 3) {
+            if (cellValue === 2 || cellValue === 3) {
                 c.setIsMovingStart(false);
                 c.setIsMovingEnd(false);
                 return prevGrid;
-            };
-            // Find and remove existing node (2)
+            }
+
             const newGrid = prevGrid.map((row) =>
                 row.map((cell) => (cell === n ? 0 : cell))
             );
 
-            // Place new node
             if (c.isMovingStart) {
                 newGrid[rowIndex][colIndex] = 2;
-                c.setIsMovingStart(false); // turn off move mode after placement
+                c.setStartPos([rowIndex, colIndex]);
+                c.setIsMovingStart(false);
             } else if (c.isMovingEnd) {
                 newGrid[rowIndex][colIndex] = 3;
-                c.setIsMovingEnd(false); // turn off move mode after placement
+                c.setEndPos([rowIndex, colIndex]);
+                c.setIsMovingEnd(false);
             }
 
             return newGrid;
         });
     };
 
-    
     const updateCell = (rowIndex, colIndex) => {
         const cellValue = c.grid[rowIndex][colIndex];
-        if (cellValue === 2) {
-            // If cell is 2 and not moving node mode, ignore clicks
-            if (!c.isMovingStart) return;
-            // else if moving node, placeNode logic should be used, so ignore here
-            return;
-        } else if (cellValue === 3) {
-            // If cell is 3 and not moving node mode, ignore clicks
-            if (!c.isMovingEnd) return;
-            // else if moving node, placeNode logic should be used, so ignore here
+        if ((cellValue === 2 && !c.isMovingStart) || (cellValue === 3 && !c.isMovingEnd)) {
             return;
         }
 
@@ -87,35 +79,65 @@ const Grid = () => {
                             key={colIndex}
                             onMouseDown={() => {
                                 setIsMouseDown(true);
-                                if (c.isMovingStart) {
-                                    placeNode(rowIndex, colIndex);
-                                } else if (c.isMovingEnd) {
+                                if (c.isMovingStart || c.isMovingEnd) {
                                     placeNode(rowIndex, colIndex);
                                 } else {
                                     updateCell(rowIndex, colIndex);
                                 }
                             }}
                             onMouseEnter={() => {
-                                if (isMouseDown && !c.isMovingStart) {
+                                if (isMouseDown && !c.isMovingStart && !c.isMovingEnd) {
                                     updateCell(rowIndex, colIndex);
                                 }
                             }}
-                            className={`border ${
+                            className={`border border-gray-300 ${
                                 cell === 0
-                                    ? "bg-gray-100 border-gray-300"
+                                    ? "bg-gray-100"
                                     : cell === 1
-                                    ? "bg-black border-black"
-                                    : cell === 2
-                                    ? "bg-green-500 border-green-700"
-                                    : "bg-blue-500 border-blue-500"
+                                    ? "bg-[#260F01]"
+                                    : cell === 2 
+                                    ? "bg-gray-100"
+                                    : cell === 3
+                                    ? "bg-gray-100"
+                                    : cell === 4
+                                    ? "bg-[#8C6D51]"
+                                    :"bg-[#BFA98E]"
                             }`}
                             style={{
                                 width: CELL_SIZE,
                                 height: CELL_SIZE,
                                 transition: "background-color 0.2s",
                                 userSelect: "none",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
                             }}
-                        />
+                        >
+                            {cell === 2 && (
+                                <img
+                                    src={knightIcon}
+                                    alt="Knight"
+                                    style={{
+                                        width: "80%",
+                                        height: "80%",
+                                        objectFit: "contain",
+                                    }}
+                                />
+                            )}
+
+                            
+                            {cell === 3 && (
+                                <img
+                                    src={princessIcon}
+                                    alt="princess"
+                                    style={{
+                                        width: "80%",
+                                        height: "80%",
+                                        objectFit: "contain",
+                                    }}
+                                />
+                            )}
+                        </div>
                     ))}
                 </div>
             ))}

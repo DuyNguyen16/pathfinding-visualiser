@@ -8,6 +8,7 @@ export const mainContext = React.createContext({});
 
 function App() {
     const [grid, setGrid] = useState([]);
+
     const [isMovingStart, setIsMovingStart] = useState(false);
     const [isMovingEnd, setIsMovingEnd] = useState(false);
     const [startPos, setStartPos] = useState([0, 0]);
@@ -44,6 +45,8 @@ function App() {
             )
         );
     };
+
+    
 
     // Toggle move node mode
     const toggleMoveStart = () => {
