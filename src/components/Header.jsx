@@ -79,7 +79,7 @@ const Header = () => {
 
             <div className="flex gap-2 relative">
                 <button
-                    className="bg-[#9C968C] hover:bg-[#79736b] cursor-pointer px-2 py-1 duration-100"
+                    className="bg-[#9C968C] hover:bg-[#79736b] cursor-pointer px-2 py-1 duration-100 rounded-[2.5px]"
                     onClick={toggleDropdown}
                 >
                     Algorithm ▼
@@ -91,7 +91,7 @@ const Header = () => {
                     </div>
                 )}
 
-                <div className="bg-[#9C968C] hover:bg-[#79736b] cursor-pointer px-2 py-1 duration-100">
+                <div className="bg-[#9C968C] hover:bg-[#79736b] cursor-pointer px-2 py-1 duration-100 rounded-[2.5px]">
                     Maze & Patterns
                 </div>
             </div>
@@ -99,14 +99,14 @@ const Header = () => {
             <div className="flex gap-2">
                 <button
                     onClick={clearGrid}
-                    className="bg-red-500 px-4 py-1 hover:bg-red-700 transition-colors duration-300 cursor-pointer"
+                    className="bg-red-500 px-4 py-1 hover:bg-red-700 transition-colors duration-300 cursor-pointer rounded-[2.5px]"
                 >
                     Clear
                 </button>
 
                 <button
                     onClick={c.toggleMoveStart}
-                    className={`px-4 py-1 cursor-pointer transition-colors duration-300 ${
+                    className={`px-4 py-1 cursor-pointer transition-colors duration-300 rounded-[2.5px] ${
                         c.isMovingStart
                             ? "bg-yellow-400 hover:bg-yellow-500"
                             : "bg-gray-400 hover:bg-gray-500"
@@ -117,7 +117,7 @@ const Header = () => {
 
                 <button
                     onClick={c.toggleMoveEnd}
-                    className={`px-4 py-1 cursor-pointer transition-colors duration-300 ${
+                    className={`px-4 py-1 cursor-pointer transition-colors duration-300 rounded-[2.5px] ${
                         c.isMovingEnd
                             ? "bg-yellow-400 hover:bg-yellow-500"
                             : "bg-gray-400 hover:bg-gray-500"
@@ -129,7 +129,7 @@ const Header = () => {
                 {c.running == false ? (
                     <button
                         disabled={!c.algorithms}
-                        className={`px-4 py-1 transition-colors duration-300 cursor-pointer ${
+                        className={`px-4 py-1 transition-colors duration-300 cursor-pointer rounded-[2.5px] ${
                             c.algorithms
                                 ? "bg-emerald-500 hover:bg-emerald-700"
                                 : "bg-gray-400 cursor-not-allowed"
@@ -140,7 +140,7 @@ const Header = () => {
                     </button>
                 ) : (
                     <button
-                        className={`px-4 py-1 transition-colors duration-300 cursor-pointer ${"bg-red-500 hover:bg-red-700"}`}
+                        className="px-4 py-1 transition-colors duration-300 cursor-pointer rounded-[2.5px] bg-red-500 hover:bg-red-700"
                         onClick={handleReset}
                     >
                         Stop!
