@@ -100,7 +100,7 @@ const Grid = () => {
                                     : cell === 3
                                     ? "bg-[#BFA98E]" // end node state
                                     : cell === 4
-                                    ? "bg-[#8C6D51]" // finding state
+                                    ? "bg-[#705740]" // finding state
                                     :"bg-[#BFA98E]" // final path state
                             }`}
                             style={{
