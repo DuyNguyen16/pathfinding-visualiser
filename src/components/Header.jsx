@@ -1,11 +1,14 @@
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { mainContext } from "../App";
 import DropDownList from "./DropDownList";
-import BreadthFirstSearch from "../algorithms/BreadthFirstSearch";
+import BreadthFirstSearch from "../algorithms/search/BreadthFirstSearch";
+import RecursiveDivision from "../algorithms/maze/RecursiveDivision";
 
 const Header = () => {
     const c = useContext(mainContext);
-    const [showDropdown, setShowDropdown] = useState(false);
+    const [showAlgoDropdown, setShowAlgoDropdown] = useState(false);
+    const [showMazeDropdown, setShowMazeDropdown] = useState(false);
+
     const resetRef = useRef(false);
 
     const clearGrid = () => {
@@ -22,7 +25,7 @@ const Header = () => {
         );
     };
 
-        const stopVisual = () => {
+    const stopVisual = () => {
         c.setGrid((prevGrid) =>
             prevGrid.map((row, rIdx) =>
                 row.map((cell, cIdx) =>
@@ -38,15 +41,12 @@ const Header = () => {
         );
     };
 
-    const toggleDropdown = () => {
-        setShowDropdown((prev) => !prev);
-    };
-
     const handleVisualise = async () => {
-        setShowDropdown(false);
+        setShowAlgoDropdown(false);
+        setShowMazeDropdown(false);
         c.setRunning(true);
-        resetRef.current = false; 
-        
+        resetRef.current = false;
+
         switch (c.algorithms) {
             case "Breadth-first Search":
                 await BreadthFirstSearch(c, resetRef);
@@ -66,10 +66,16 @@ const Header = () => {
         c.setRunning(false);
     };
 
-    const handleReset = () => {
-        resetRef.current = true;
-        stopVisual();
-    };
+    useEffect(() => {
+        switch (c.maze) {
+            case "Recursive Division":
+                RecursiveDivision(c);
+                c.setMaze("");
+                break
+            default:
+                console.warn("No algorithm selected or matched.");
+        }
+    }, [c.maze]);
 
     return (
         <div className="bg-backgroundBG px-4 py-2 min-h-10 flex items-center gap-2 justify-between">
@@ -80,20 +86,33 @@ const Header = () => {
             <div className="flex gap-2 relative">
                 <button
                     className="bg-[#9C968C] hover:bg-[#79736b] cursor-pointer px-2 py-1 duration-100 rounded-[2.5px]"
-                    onClick={toggleDropdown}
+                    onClick={() => {
+                        setShowAlgoDropdown((prev) => !prev);
+                        setShowMazeDropdown(false);
+                    }}
                 >
                     Algorithm ▼
                 </button>
-
-                {showDropdown && (
-                    <div className="absolute top-12 left-0 z-10 ">
-                        <DropDownList />
+                {showAlgoDropdown && (
+                    <div className="absolute top-12 left-0 z-10">
+                        <DropDownList c={c} type={"algo"} />
                     </div>
                 )}
 
-                <div className="bg-[#9C968C] hover:bg-[#79736b] cursor-pointer px-2 py-1 duration-100 rounded-[2.5px]">
-                    Maze & Patterns
-                </div>
+                <button
+                    className="bg-[#9C968C] hover:bg-[#79736b] cursor-pointer px-2 py-1 duration-100 rounded-[2.5px]"
+                    onClick={() => {
+                        setShowMazeDropdown((prev) => !prev);
+                        setShowAlgoDropdown(false);
+                    }}
+                >
+                    Maze & Patterns ▼
+                </button>
+                {showMazeDropdown && (
+                    <div className="absolute top-12 w-60 left-30 z-10">
+                        <DropDownList c={c} type={"maze"} />
+                    </div>
+                )}
             </div>
 
             <div className="flex gap-2">
@@ -141,7 +160,10 @@ const Header = () => {
                 ) : (
                     <button
                         className="px-4 py-1 transition-colors duration-300 cursor-pointer rounded-[2.5px] bg-red-500 hover:bg-red-700"
-                        onClick={handleReset}
+                        onClick={() => {
+                            resetRef.current = true;
+                            stopVisual();
+                        }}
                     >
                         Stop!
                     </button>

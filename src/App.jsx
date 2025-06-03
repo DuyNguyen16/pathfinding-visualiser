@@ -14,9 +14,11 @@ function App() {
     const [startPos, setStartPos] = useState([0, 0]);
     const [endPos, setEndPos] = useState([0, 0]);
     const [algorithms, setAlgorithms] = useState("");
+    const [maze, setMaze] = useState("");
     const [running, setRunning] = useState(false);
 
     const algoList = ["Breadth-first Search", "Depth-first Search", "Dijkstra's Algorithm","A* Search"];
+    const mazeList  = ["Recursive Division", "Randomised Depth-first Search", "Prim’s Algorithm","Eller’s Algorithm"];
 
     useEffect(() => {
         const screenWidth = window.innerWidth;
@@ -61,9 +63,12 @@ function App() {
         setEndPos,
         algorithms,
         setAlgorithms,
+        maze, 
+        setMaze,
         toggleMoveStart,
         toggleMoveEnd,
         algoList,
+        mazeList,
         running, 
         setRunning,
     };
