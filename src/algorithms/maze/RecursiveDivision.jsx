@@ -63,8 +63,8 @@ const divide = async (c, x, y, width, height) => {
             await delay(40);
         }
 
-        divide(c, x, y, wallX - x, height); // Left
-        divide(c, wallX + 1, y, x + width - wallX - 1, height); // Right
+        await divide(c, x, y, wallX - x, height); // Left
+        await divide(c, wallX + 1, y, x + width - wallX - 1, height); // Right
     } else {
         for (let i = y; i < y + height; i++) {
             if (i % 2 == 0) {
@@ -92,8 +92,8 @@ const divide = async (c, x, y, width, height) => {
             await delay(40);
         }
 
-        divide(c, x, y, width, wallX - y); // Top
-        divide(c, x, wallX + 1, width, y + height - wallX - 1); // Bottom
+        await divide(c, x, y, width, wallX - y); // Top
+        await divide(c, x, wallX + 1, width, y + height - wallX - 1); // Bottom
     }
 };
 

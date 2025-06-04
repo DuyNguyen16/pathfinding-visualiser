@@ -3,7 +3,6 @@ import { mainContext } from "../App";
 import knightIcon from "../assets/knight.png";
 import princessIcon from "../assets/princess.png";
 
-
 const CELL_SIZE = 30;
 
 const Grid = () => {
@@ -53,7 +52,10 @@ const Grid = () => {
 
     const updateCell = (rowIndex, colIndex) => {
         const cellValue = c.grid[rowIndex][colIndex];
-        if ((cellValue === 2 && !c.isMovingStart) || (cellValue === 3 && !c.isMovingEnd)) {
+        if (
+            (cellValue === 2 && !c.isMovingStart) ||
+            (cellValue === 3 && !c.isMovingEnd)
+        ) {
             return;
         }
 
@@ -70,9 +72,11 @@ const Grid = () => {
         );
     };
 
-
     return (
-        <div className="flex flex-col select-none">
+        <div
+            className="flex flex-col select-none"
+            style={{ width: "fit-content" }}
+        >
             {c.grid.map((row, rowIndex) => (
                 <div key={rowIndex} className="flex">
                     {row.map((cell, colIndex) => (
@@ -87,22 +91,26 @@ const Grid = () => {
                                 }
                             }}
                             onMouseEnter={() => {
-                                if (isMouseDown && !c.isMovingStart && !c.isMovingEnd) {
+                                if (
+                                    isMouseDown &&
+                                    !c.isMovingStart &&
+                                    !c.isMovingEnd
+                                ) {
                                     updateCell(rowIndex, colIndex);
                                 }
                             }}
-                            className={`border border-gray-300 ${
+                            className={`  ${
                                 cell === 0
-                                    ? "bg-gray-100" //normal state
+                                    ? "bg-gray-100 border border-gray-300" //normal state
                                     : cell === 1
                                     ? "bg-[#260F01]" // wall state
-                                    : cell === 2 
-                                    ? "bg-[#BFA98E]" // start node state
+                                    : cell === 2
+                                    ? "bg-[#BFA98E] border border-gray-300" // start node state
                                     : cell === 3
-                                    ? "bg-[#BFA98E]" // end node state
+                                    ? "bg-[#BFA98E] border border-gray-300" // end node state
                                     : cell === 4
-                                    ? "bg-[#705740]" // finding state
-                                    :"bg-[#BFA98E]" // final path state
+                                    ? "bg-[#705740] border border-gray-300" // finding state
+                                    : "bg-[#BFA98E] border border-gray-300" // final path state
                             }`}
                             style={{
                                 width: CELL_SIZE,
@@ -126,7 +134,6 @@ const Grid = () => {
                                 />
                             )}
 
-                            
                             {cell === 3 && (
                                 <img
                                     src={princessIcon}

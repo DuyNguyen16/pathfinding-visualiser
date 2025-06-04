@@ -1,6 +1,6 @@
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const BreadthFirstSearch = async (c, reset) => {
+const BreadthFirstSearch = async (c, reset, pathLength) => {
     let queue = [];
     let numRow = c.grid.length;
     let numCol = c.grid[0].length;
@@ -48,9 +48,11 @@ const BreadthFirstSearch = async (c, reset) => {
         let path = [];
         let s = c.endPos[0];
         let m = c.endPos[1];
+        let count = 0;
 
         while (!(s === c.startPos[0] && m === c.startPos[1])) {
             path.push([s, m]);
+            count += 1;
             [s, m] = prev[s][m];
         }
 
@@ -59,6 +61,8 @@ const BreadthFirstSearch = async (c, reset) => {
             c.setGrid([...c.grid]);
             await delay(40);
         }
+
+        c.setPathLength(count);
     }
 };
 
