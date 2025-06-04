@@ -9,6 +9,9 @@ const Header = () => {
     const [showAlgoDropdown, setShowAlgoDropdown] = useState(false);
     const [showMazeDropdown, setShowMazeDropdown] = useState(false);
 
+    const [isRunning, setIsRunning] = useState(false);
+    const [isMaze, setIsMaze] = useState(false);
+
     const resetRef = useRef(false);
 
     const clearGrid = () => {
@@ -28,15 +31,12 @@ const Header = () => {
     const stopVisual = () => {
         c.setGrid((prevGrid) =>
             prevGrid.map((row, rIdx) =>
-                row.map((cell, cIdx) =>
-                    rIdx === c.startPos[0] && cIdx === c.startPos[1]
-                        ? 2
-                        : rIdx === c.endPos[0] && cIdx === c.endPos[1]
-                        ? 3
-                        : c.grid[rIdx][cIdx] === 1
-                        ? 1
-                        : 0
-                )
+                row.map((cell, cIdx) => {
+                    if (rIdx === c.startPos[0] && cIdx === c.startPos[1])
+                        return 2;
+                    if (rIdx === c.endPos[0] && cIdx === c.endPos[1]) return 3;
+                    return cell === 1 ? 1 : 0;
+                })
             )
         );
     };
@@ -44,7 +44,7 @@ const Header = () => {
     const handleVisualise = async () => {
         setShowAlgoDropdown(false);
         setShowMazeDropdown(false);
-        c.setRunning(true);
+        setIsRunning(true);
         resetRef.current = false;
 
         switch (c.algorithms) {
@@ -63,17 +63,28 @@ const Header = () => {
             default:
                 console.warn("No algorithm selected or matched.");
         }
-        c.setRunning(false);
+        setIsRunning(false);
     };
 
     useEffect(() => {
-        switch (c.maze) {
-            case "Recursive Division":
-                RecursiveDivision(c);
-                c.setMaze("");
-                break
-            default:
-                console.warn("No algorithm selected or matched.");
+        const runMaze = async () => {
+            setIsMaze(true); // 🔹 Start of maze generation
+            setShowAlgoDropdown(false);
+            setShowMazeDropdown(false);
+
+            switch (c.maze) {
+                case "Recursive Division":
+                    await RecursiveDivision(c);
+                    break;
+                default:
+                    console.warn("No algorithm selected or matched.");
+            }
+
+            setIsMaze(false); // 🔹 End of maze generation
+        };
+
+        if (c.maze) {
+            runMaze();
         }
     }, [c.maze]);
 
@@ -95,7 +106,11 @@ const Header = () => {
                 </button>
                 {showAlgoDropdown && (
                     <div className="absolute top-12 left-0 z-10">
-                        <DropDownList c={c} type={"algo"} />
+                        <DropDownList
+                            c={c}
+                            type={"algo"}
+                            isRunning={isRunning}
+                        />
                     </div>
                 )}
 
@@ -110,7 +125,7 @@ const Header = () => {
                 </button>
                 {showMazeDropdown && (
                     <div className="absolute top-12 w-60 left-30 z-10">
-                        <DropDownList c={c} type={"maze"} />
+                        <DropDownList c={c} type={"maze"} isRunning={isMaze} />
                     </div>
                 )}
             </div>
@@ -130,6 +145,7 @@ const Header = () => {
                             ? "bg-yellow-400 hover:bg-yellow-500"
                             : "bg-gray-400 hover:bg-gray-500"
                     }`}
+                    disabled={isRunning || isMaze}
                 >
                     {c.isMovingStart ? "Place Start: ON" : "Move Start"}
                 </button>
@@ -141,11 +157,12 @@ const Header = () => {
                             ? "bg-yellow-400 hover:bg-yellow-500"
                             : "bg-gray-400 hover:bg-gray-500"
                     }`}
+                    disabled={isRunning || isMaze}
                 >
                     {c.isMovingEnd ? "Place End: ON" : "Move End"}
                 </button>
 
-                {c.running == false ? (
+                {isRunning == false ? (
                     <button
                         disabled={!c.algorithms}
                         className={`px-4 py-1 transition-colors duration-300 cursor-pointer rounded-[2.5px] ${

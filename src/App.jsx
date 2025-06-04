@@ -15,7 +15,6 @@ function App() {
     const [endPos, setEndPos] = useState([0, 0]);
     const [algorithms, setAlgorithms] = useState("");
     const [maze, setMaze] = useState("");
-    const [running, setRunning] = useState(false);
 
     const algoList = ["Breadth-first Search", "Depth-first Search", "Dijkstra's Algorithm","A* Search"];
     const mazeList  = ["Recursive Division", "Randomised Depth-first Search", "Prim’s Algorithm","Eller’s Algorithm"];
@@ -25,7 +24,11 @@ function App() {
         const screenHeight = window.innerHeight;
 
         const cols = Math.floor(screenWidth / CELL_SIZE) - 1;
-        const rows = Math.floor(screenHeight / CELL_SIZE) - 2;
+        let rows = Math.floor(screenHeight / CELL_SIZE) - 2;
+
+        if (rows%2 == 0) {
+            rows = rows - 1;
+        }
 
         const newGrid = Array.from({ length: rows }, () => Array(cols).fill(0));
         const midRow = Math.floor(rows / 2) - 1;
@@ -37,6 +40,7 @@ function App() {
         setEndPos([midRow, midRowEndCol]);
         setStartPos([midRow, Math.floor(cols/4)]);
         setGrid(newGrid);
+        console.log(`WIDTH: ${newGrid[0].length}, HEIGHT: ${newGrid.length}\n`);
     }, []);
 
     // Toggle move node mode
@@ -69,8 +73,6 @@ function App() {
         toggleMoveEnd,
         algoList,
         mazeList,
-        running, 
-        setRunning,
     };
 
     return (

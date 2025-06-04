@@ -70,6 +70,7 @@ const Grid = () => {
         );
     };
 
+
     return (
         <div className="flex flex-col select-none">
             {c.grid.map((row, rowIndex) => (

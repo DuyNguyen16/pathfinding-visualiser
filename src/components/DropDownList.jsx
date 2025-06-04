@@ -1,4 +1,4 @@
-const DropDownList = ({ c, type }) => {
+const DropDownList = ({ c, type, isRunning }) => {
     const handleSelect = (value) => {
         if (type == "algo") {
             c.setAlgorithms(value);
@@ -17,6 +17,7 @@ const DropDownList = ({ c, type }) => {
                         }`}
                         key={index}
                         onClick={() => handleSelect(value)}
+                        disabled={isRunning}
                     >
                         {value}
                     </button>
@@ -28,6 +29,7 @@ const DropDownList = ({ c, type }) => {
                         }`}
                         key={index}
                         onClick={() => handleSelect(value)}
+                        disabled={isRunning}
                     >
                         {value}
                     </button>
