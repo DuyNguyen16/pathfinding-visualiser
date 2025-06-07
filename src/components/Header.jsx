@@ -5,6 +5,7 @@ import BreadthFirstSearch from "../algorithms/search/BreadthFirstSearch";
 import RecursiveDivision from "../algorithms/maze/RecursiveDivision";
 import DepthFirstSearch from "../algorithms/search/DepthFirstSearch";
 
+
 const Header = () => {
     const c = useContext(mainContext);
     const [showAlgoDropdown, setShowAlgoDropdown] = useState(false);
@@ -70,7 +71,7 @@ const Header = () => {
                 await DepthFirstSearch(c, resetRef);
                 break;
             case "dijkstra":
-                // await Dijkstra(c, resetRef); // <-- Add this when ready
+                // await Dijkstra(c, resetRef);
                 break;
             case "astar":
                 // await AStarSearch(c, resetRef); // <-- Add this when ready
@@ -152,7 +153,6 @@ const Header = () => {
                 <button
                     onClick={() => {
                         clearPath();
-                        c.setMaze("");
                     }}
                     className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
                     disabled={isRunning || isMaze}
