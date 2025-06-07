@@ -101,16 +101,16 @@ const Grid = () => {
                             }}
                             className={`  ${
                                 cell === 0
-                                    ? "bg-gray-100 border border-gray-300" //normal state
+                                    ? "bg-gray-100 border border-gray-300" //normal state 0
                                     : cell === 1
-                                    ? "bg-[#260F01]" // wall state
+                                    ? "bg-[#260F01]" // wall state 1
                                     : cell === 2
-                                    ? "bg-[#BFA98E] border border-gray-300" // start node state
+                                    ? "bg-[#BFA98E] border border-gray-300" // start node state 2
                                     : cell === 3
-                                    ? "bg-[#BFA98E] border border-gray-300" // end node state
+                                    ? "bg-[#BFA98E] border border-gray-300" // end node state 3
                                     : cell === 4
-                                    ? "bg-[#705740] border border-gray-300" // finding state
-                                    : "bg-[#BFA98E] border border-gray-300" // final path state
+                                    ? "bg-[#705740] border border-gray-300" // finding state 4
+                                    : "bg-[#BFA98E] border border-gray-300" // final path state 5
                             }`}
                             style={{
                                 width: CELL_SIZE,

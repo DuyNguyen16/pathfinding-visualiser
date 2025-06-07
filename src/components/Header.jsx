@@ -3,6 +3,7 @@ import { mainContext } from "../App";
 import DropDownList from "./DropDownList";
 import BreadthFirstSearch from "../algorithms/search/BreadthFirstSearch";
 import RecursiveDivision from "../algorithms/maze/RecursiveDivision";
+import DepthFirstSearch from "../algorithms/search/DepthFirstSearch";
 
 const Header = () => {
     const c = useContext(mainContext);
@@ -15,13 +16,28 @@ const Header = () => {
     const clearGrid = () => {
         c.setGrid((prevGrid) =>
             prevGrid.map((row, rIdx) =>
-                row.map((cell, cIdx) =>
-                    rIdx === c.startPos[0] && cIdx === c.startPos[1]
-                        ? 2
-                        : rIdx === c.endPos[0] && cIdx === c.endPos[1]
-                        ? 3
-                        : 0
+                row.map(
+                    (cell, cIdx) =>
+                        rIdx === c.startPos[0] && cIdx === c.startPos[1]
+                            ? 2 // Start
+                            : rIdx === c.endPos[0] && cIdx === c.endPos[1]
+                            ? 3 // End
+                            : 0 // Empty
                 )
+            )
+        );
+    };
+
+    const clearPath = () => {
+        c.setGrid((prevGrid) =>
+            prevGrid.map((row, rIdx) =>
+                row.map((cell, cIdx) => {
+                    if (rIdx === c.startPos[0] && cIdx === c.startPos[1])
+                        return 2;
+                    if (rIdx === c.endPos[0] && cIdx === c.endPos[1]) return 3;
+                    // Clear visited (4) and path (5)
+                    return cell === 4 || cell === 5 ? 0 : cell;
+                })
             )
         );
     };
@@ -47,8 +63,17 @@ const Header = () => {
         resetRef.current = false;
 
         switch (c.algorithms) {
-            case "Breadth-first Search":
-                await BreadthFirstSearch(c, resetRef, c.pathLength);
+            case "bfs":
+                await BreadthFirstSearch(c, resetRef);
+                break;
+            case "dfs":
+                await DepthFirstSearch(c, resetRef);
+                break;
+            case "dijkstra":
+                // await Dijkstra(c, resetRef); // <-- Add this when ready
+                break;
+            case "astar":
+                // await AStarSearch(c, resetRef); // <-- Add this when ready
                 break;
             default:
                 console.warn("No algorithm selected or matched.");
@@ -64,7 +89,7 @@ const Header = () => {
             setShowMazeDropdown(false);
 
             switch (c.maze) {
-                case "Recursive Division":
+                case "recursive-division":
                     await RecursiveDivision(c);
                     break;
                 default:
@@ -88,7 +113,7 @@ const Header = () => {
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 relative text-xs sm:text-sm">
                 <button
-                    className="bg-[#9C968C] hover:bg-[#79736b] px-2 py-1 rounded"
+                    className="bg-[#9C968C] hover:bg-[#79736b] px-2 py-1 rounded cursor-pointer"
                     onClick={() => {
                         setShowAlgoDropdown((prev) => !prev);
                         setShowMazeDropdown(false);
@@ -107,11 +132,12 @@ const Header = () => {
                 )}
 
                 <button
-                    className="bg-[#9C968C] hover:bg-[#79736b] px-2 py-1 rounded"
+                    className="bg-[#9C968C] hover:bg-[#79736b] px-2 py-1 rounded cursor-pointer"
                     onClick={() => {
                         setShowMazeDropdown((prev) => !prev);
                         setShowAlgoDropdown(false);
                     }}
+                    disabled={isRunning}
                 >
                     Maze & Patterns ▼
                 </button>
@@ -125,18 +151,29 @@ const Header = () => {
             <div className="flex flex-wrap justify-center lg:justify-end gap-2 text-xs sm:text-sm">
                 <button
                     onClick={() => {
+                        clearPath();
+                        c.setMaze("");
+                    }}
+                    className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
+                    disabled={isRunning || isMaze}
+                >
+                    Clear Path
+                </button>
+
+                <button
+                    onClick={() => {
                         clearGrid();
                         c.setMaze("");
                     }}
-                    className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded"
+                    className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
                     disabled={isRunning || isMaze}
                 >
-                    Clear
+                    Clear Grid
                 </button>
 
                 <button
                     onClick={c.toggleMoveStart}
-                    className={`px-3 py-1 rounded ${
+                    className={`px-3 py-1 rounded cursor-pointer ${
                         c.isMovingStart
                             ? "bg-yellow-400 hover:bg-yellow-500"
                             : "bg-gray-400 hover:bg-gray-500"
@@ -148,7 +185,7 @@ const Header = () => {
 
                 <button
                     onClick={c.toggleMoveEnd}
-                    className={`px-3 py-1 rounded ${
+                    className={`px-3 py-1 rounded cursor-pointer ${
                         c.isMovingEnd
                             ? "bg-yellow-400 hover:bg-yellow-500"
                             : "bg-gray-400 hover:bg-gray-500"
@@ -164,7 +201,7 @@ const Header = () => {
                         onClick={handleVisualise}
                         className={`px-3 py-1 rounded ${
                             c.algorithms
-                                ? "bg-emerald-500 hover:bg-emerald-700"
+                                ? "bg-emerald-500 hover:bg-emerald-700 cursor-pointer"
                                 : "bg-gray-400 cursor-not-allowed"
                         }`}
                     >
@@ -176,7 +213,7 @@ const Header = () => {
                             resetRef.current = true;
                             stopVisual();
                         }}
-                        className="bg-red-500 hover:bg-red-700 px-3 py-1 rounded text-white"
+                        className="bg-red-500 hover:bg-red-700 px-3 py-1 rounded text-white cursor-pointer"
                     >
                         Stop!
                     </button>

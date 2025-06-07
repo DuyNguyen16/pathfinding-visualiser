@@ -31,19 +31,6 @@ function App() {
     // Stats
     const [pathLength, setPathLength] = useState(0);
 
-    const algoList = [
-        "Breadth-first Search",
-        "Depth-first Search",
-        "Dijkstra's Algorithm",
-        "A* Search",
-    ];
-    const mazeList = [
-        "Recursive Division",
-        "Randomised Depth-first Search",
-        "Prim’s Algorithm",
-        "Eller’s Algorithm",
-    ];
-
     const toggleMoveStart = () => {
         setIsMovingStart((prev) => !prev);
         setIsMovingEnd(false);
@@ -96,8 +83,6 @@ function App() {
         setMaze,
         toggleMoveStart,
         toggleMoveEnd,
-        algoList,
-        mazeList,
         pathLength, 
         setPathLength,
     };
