@@ -1,31 +1,32 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const Dijkstra = async (c, reset) => {
+const Astar = async (c, reset) => {
     const numRow = c.grid.length;
     const numCol = c.grid[0].length;
 
     const distance = Array.from({ length: numRow }, () =>
         Array(numCol).fill(Infinity)
     );
+
     const prev = Array.from({ length: numRow }, () =>
-        Array(numCol).fill([0, 0])
+        Array.from({ length: numCol }, () => null)
     );
 
-    const rowDirection = [-1, 0, 1, 0];
-    const colDirection = [0, 1, 0, -1];
+    const rowDirection = [0, 1, 0, -1];
+    const colDirection = [1, 0, -1, 0];
 
-    const compare = (a, b) => a[0] - b[0]; // min-heap based on distance
+    const compare = (a, b) => a[0] - b[0];
 
     const pq = [];
-    const [startRow, startCol] = c.startPos;
-    const [endRow, endCol] = c.endPos;
+    const [startR, startC] = c.startPos;
+    const [endR, endC] = c.endPos;
 
-    distance[startRow][startCol] = 0;
-    pq.push([0, startRow, startCol]);
+    distance[startR][startC] = 0;
+    pq.push([0, startR, startC]);
 
     while (pq.length > 0) {
         pq.sort(compare);
-        const [dist, row, col] = pq.shift();
+        const [_, row, col] = pq.shift();
 
         if (reset.current) return;
         if (c.grid[row][col][0] === 4) continue;
@@ -44,54 +45,66 @@ const Dijkstra = async (c, reset) => {
             await delay(1);
         }
 
-        if (row === endRow && col === endCol) break;
+        if (row === endR && col === endC) break;
 
         for (let i = 0; i < 4; i++) {
             const neighbourRow = row + rowDirection[i];
             const neighbourCol = col + colDirection[i];
 
-            if (neighbourRow < 0 || neighbourRow >= numRow) continue;
-            if (neighbourCol < 0 || neighbourCol >= numCol) continue;
             if (
-                c.grid[neighbourRow][neighbourCol][0] === 4 ||
-                c.grid[neighbourRow][neighbourCol][0] === 1
+                neighbourRow < 0 ||
+                neighbourRow >= numRow ||
+                neighbourCol < 0 ||
+                neighbourCol >= numCol
+            )
+                continue;
+
+            if (
+                c.grid[neighbourRow][neighbourCol][0] === 1 ||
+                c.grid[neighbourRow][neighbourCol][0] === 4
             )
                 continue;
 
             const weight = c.grid[neighbourRow][neighbourCol][1];
-            const newDist = dist + weight;
+            const newCost = weight;
 
-            if (newDist < distance[neighbourRow][neighbourCol]) {
-                distance[neighbourRow][neighbourCol] = newDist;
+            if (newCost < distance[neighbourRow][neighbourCol]) {
+                distance[neighbourRow][neighbourCol] = newCost;
                 prev[neighbourRow][neighbourCol] = [row, col];
-                pq.push([newDist, neighbourRow, neighbourCol]);
+
+                const heuristic =
+                    Math.abs(endR - neighbourRow) +
+                    Math.abs(endC - neighbourCol);
+
+                pq.push([newCost + heuristic, neighbourRow, neighbourCol]);
+                
             }
         }
+
     }
 
-    // Reconstruct path
-    if (distance[endRow][endCol] !== Infinity) {
+    // Reconstruct path if reachable
+    if (distance[endR][endC] !== Infinity) {
         const path = [];
-        let row = endRow;
-        let col = endCol;
+        let r = endR;
+        let col = endC;
         let totalCost = 0;
 
-        while (!(row === startRow && col === startCol)) {
-            path.push([row, col]);
+        while (!(r === startR && col === startC)) {
+            path.push([r, col]);
 
-            
-            totalCost += c.grid[row][col][1];
+            totalCost += c.grid[r][col][1];
 
-            [row, col] = prev[row][col];
-            if (!prev[row] || !prev[row][col]) break;
+            [r, col] = prev[r][col];
+            if (!prev[r] || !prev[r][col]) break;
         }
 
         for (let i = path.length - 1; i > 0; i--) {
             const [pr, pc] = path[i];
 
             c.setGrid((prevGrid) => {
-                const newGrid = prevGrid.map((r, rowIndex) =>
-                    r.map((cell, colIndex) =>
+                const newGrid = prevGrid.map((row, rowIndex) =>
+                    row.map((cell, colIndex) =>
                         rowIndex === pr && colIndex === pc ? [5, cell[1]] : cell
                     )
                 );
@@ -106,4 +119,4 @@ const Dijkstra = async (c, reset) => {
     }
 };
 
-export default Dijkstra;
+export default Astar;

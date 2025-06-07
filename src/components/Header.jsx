@@ -5,13 +5,14 @@ import BreadthFirstSearch from "../algorithms/search/BreadthFirstSearch";
 import RecursiveDivision from "../algorithms/maze/RecursiveDivision";
 import DepthFirstSearch from "../algorithms/search/DepthFirstSearch";
 import Dijkstra from "../algorithms/search/Dijkstra";
+import Astar from "../algorithms/search/Astar";
 
 const Header = () => {
     const c = useContext(mainContext);
     const [showAlgoDropdown, setShowAlgoDropdown] = useState(false);
     const [showMazeDropdown, setShowMazeDropdown] = useState(false);
     const [isRunning, setIsRunning] = useState(false);
-    
+
     const [isMaze, setIsMaze] = useState(false);
     const resetRef = useRef(false);
 
@@ -23,7 +24,7 @@ const Header = () => {
                         return [2, node[0]];
                     if (rIdx === c.endPos[0] && cIdx === c.endPos[1])
                         return [3, node[0]];
-                    return [0, node[0]];
+                    return [0, 1];
                 })
             )
         );
@@ -45,24 +46,12 @@ const Header = () => {
         );
     };
 
-    const stopVisual = () => {
-        c.setGrid((prevGrid) =>
-            prevGrid.map((row, rIdx) =>
-                row.map(([state, weight], cIdx) => {
-                    if (rIdx === c.startPos[0] && cIdx === c.startPos[1])
-                        return [2, weight];
-                    if (rIdx === c.endPos[0] && cIdx === c.endPos[1])
-                        return [3, weight];
-                    return state === 1 ? [1, weight] : [0, weight];
-                })
-            )
-        );
-    };
-
     const handleVisualise = async () => {
         c.setIsMovingEnd(false);
         c.setIsMovingStart(false);
         c.setIsPlacingWeight(false);
+
+        clearPath();
 
         setShowAlgoDropdown(false);
         setShowMazeDropdown(false);
@@ -82,7 +71,7 @@ const Header = () => {
                 await Dijkstra(c, resetRef);
                 break;
             case "astar":
-                // await AStarSearch(c, resetRef);
+                await Astar(c, resetRef);
                 break;
             default:
                 console.warn("No algorithm selected or matched.");
@@ -159,13 +148,14 @@ const Header = () => {
 
             <div className="flex flex-wrap justify-center lg:justify-end gap-2 text-xs sm:text-sm">
                 <button
-                    onClick={clearPath}
+                    onClick={() => {
+                        clearPath();
+                    }}
                     className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
                     disabled={isRunning || isMaze}
                 >
                     Clear Path
                 </button>
-
                 <button
                     onClick={() => {
                         clearGrid();
@@ -201,17 +191,22 @@ const Header = () => {
                     {c.isMovingEnd ? "Place End: ON" : "Move End"}
                 </button>
 
-                {c.algorithms == "dijkstra" && <button
-                    onClick={c.togglePlacingWeight}
-                    className={`px-3 py-1 rounded cursor-pointer ${
-                        c.isPlacingWeight
-                            ? "bg-yellow-400 hover:bg-yellow-500"
-                            : "bg-gray-400 hover:bg-gray-500"
-                    }`}
-                    disabled={isRunning || isMaze}
-                >
-                    {c.isPlacingWeight ? "Place Weight: ON" : "Place Weight"}
-                </button>}
+                {c.algorithms == "dijkstra" ||
+                    (c.algorithms == "astar" && (
+                        <button
+                            onClick={c.togglePlacingWeight}
+                            className={`px-3 py-1 rounded cursor-pointer ${
+                                c.isPlacingWeight
+                                    ? "bg-yellow-400 hover:bg-yellow-500"
+                                    : "bg-gray-400 hover:bg-gray-500"
+                            }`}
+                            disabled={isRunning || isMaze}
+                        >
+                            {c.isPlacingWeight
+                                ? "Place Weight: ON"
+                                : "Place Weight"}
+                        </button>
+                    ))}
 
                 {!isRunning ? (
                     <button
@@ -229,7 +224,7 @@ const Header = () => {
                     <button
                         onClick={() => {
                             resetRef.current = true;
-                            stopVisual();
+                            clearPath();
                         }}
                         className="bg-red-500 hover:bg-red-700 px-3 py-1 rounded text-white cursor-pointer"
                     >

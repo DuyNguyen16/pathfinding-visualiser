@@ -11,7 +11,7 @@ const getOdd = (n) => (n % 2 === 0 ? n - 1 : n);
 
 const createGrid = (rows, cols, startPos, endPos) => {
     const grid = Array.from({ length: rows }, () =>
-        Array.from({ length: cols }, () => [0, 0])
+        Array.from({ length: cols }, () => [0, 1])
     );
     grid[startPos[0]][startPos[1]][0] = 2;
     grid[endPos[0]][endPos[1]][0] = 3;
