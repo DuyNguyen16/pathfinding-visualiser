@@ -53,7 +53,7 @@ const Grid = () => {
                     const newGridCopy = prevGrid.map((row) =>
                         row.map((cell) => [...cell])
                     );
-                    newGridCopy[rowIndex][colIndex] = [0, 5]; // set state to 0 and weight to 5
+                    newGridCopy[rowIndex][colIndex] = [0, 5];
 
                     return newGridCopy;
                 }
@@ -118,16 +118,16 @@ const Grid = () => {
                             }}
                             className={`${
                                 cell[0] === 0
-                                    ? "bg-gray-100 border border-gray-300"
+                                    ? "bg-gray-100 border border-gray-300" // empty state 0
                                     : cell[0] === 1
-                                    ? "bg-[#260F01]"
+                                    ? "bg-[#260F01]" // wall state 1
                                     : cell[0] === 2
-                                    ? "bg-[#BFA98E] border border-gray-300"
+                                    ? "bg-[#BFA98E] border border-gray-300" // start state 2
                                     : cell[0] === 3
-                                    ? "bg-[#BFA98E] border border-gray-300"
+                                    ? "bg-[#BFA98E] border border-gray-300" // end state 3
                                     : cell[0] === 4
-                                    ? "bg-[#705740] border border-gray-300"
-                                    : "bg-[#BFA98E] border border-gray-300"
+                                    ? "bg-[#62676B] border border-gray-300" // finding state 4
+                                    : "bg-[#BFA98E] border border-gray-300" // path state 5
                             }`}
                             style={{
                                 width: CELL_SIZE,
@@ -173,6 +173,24 @@ const Grid = () => {
                                         objectFit: "contain",
                                     }}
                                 />
+                            )}
+
+                            {cell[1] >= 1 && (
+                                <span
+                                    style={{
+                                        position: "absolute",
+                                        bottom: "2px",
+                                        right: "2px",
+                                        backgroundColor: "white",
+                                        borderRadius: "2px",
+                                        fontSize: "0.6rem",
+                                        padding: "1px 3px",
+                                        opacity: 0.8,
+                                        color: "black",
+                                    }}
+                                >
+                                    {cell[1]}
+                                </span>
                             )}
                         </div>
                     ))}

@@ -1,106 +1,93 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Helper to deeply clone a grid
+const cloneGrid = (grid) => grid.map((row) => row.map((cell) => [...cell]));
+
 const RecursiveDivision = async (c) => {
     const rows = c.grid.length;
     const cols = c.grid[0].length;
 
+    let newGrid = cloneGrid(c.grid);
+
     // Top and bottom walls
     for (let i = 0; i < cols; i++) {
-        if (c.grid[0][i][0] !== 2 && c.grid[0][i][0] !== 3) {
-            c.grid[0][i][0] = 1;
+        if (![2, 3].includes(newGrid[0][i][0])) {
+            newGrid[0][i][0] = 1;
         }
-        if (c.grid[rows - 1][i][0] !== 2 && c.grid[rows - 1][i][0] !== 3) {
-            c.grid[rows - 1][i][0] = 1;
+        if (![2, 3].includes(newGrid[rows - 1][i][0])) {
+            newGrid[rows - 1][i][0] = 1;
         }
-        c.setGrid([...c.grid]);
+        c.setGrid(cloneGrid(newGrid));
         await delay(40);
     }
 
     // Left and right walls
     for (let j = 1; j < rows - 1; j++) {
-        if (c.grid[j][0][0] !== 2 && c.grid[j][0][0] !== 3) {
-            c.grid[j][0][0] = 1;
+        if (![2, 3].includes(newGrid[j][0][0])) {
+            newGrid[j][0][0] = 1;
         }
-        if (c.grid[j][cols - 1][0] !== 2 && c.grid[j][cols - 1][0] !== 3) {
-            c.grid[j][cols - 1][0] = 1;
+        if (![2, 3].includes(newGrid[j][cols - 1][0])) {
+            newGrid[j][cols - 1][0] = 1;
         }
-        c.setGrid([...c.grid]);
+        c.setGrid(cloneGrid(newGrid));
         await delay(40);
     }
 
-    await divide(c, 1, 1, cols - 2, rows - 2);
+    await divide(c, newGrid, 1, 1, cols - 2, rows - 2);
 };
 
-const divide = async (c, x, y, width, height) => {
+// Recursive division function
+const divide = async (c, grid, x, y, width, height) => {
     if (width <= 2 || height <= 2) return;
 
-    let potentialWalls = [];
-    let potentialDoor = [];
+    if (width <= height) {
+        let possibleYs = [];
+        for (let i = y + 1; i < y + height; i += 2) {
+            possibleYs.push(i);
+        }
 
-    if (width > height) {
+        let possibleDoors = [];
+        for (let i = x; i < x + width; i += 2) {
+            possibleDoors.push(i);
+        }
+
+        const wallY = possibleYs[Math.floor(Math.random() * possibleYs.length)];
+        const doorX =
+            possibleDoors[Math.floor(Math.random() * possibleDoors.length)];
+
         for (let i = x; i < x + width; i++) {
-            if (i % 2 === 0) {
-                potentialWalls.push(i);
-            }
-        }
-        for (let j = y; j < y + height; j++) {
-            if (j % 2 !== 0) {
-                potentialDoor.push(j);
-            }
-        }
-
-        const randomX =
-            potentialWalls[Math.floor(Math.random() * potentialWalls.length)];
-        const randomY =
-            potentialDoor[Math.floor(Math.random() * potentialDoor.length)];
-
-        for (let j = y; j < y + height; j++) {
-            if (
-                j === randomY ||
-                c.grid[j][randomX][0] === 2 ||
-                c.grid[j][randomX][0] === 3
-            )
-                continue;
-            c.grid[j][randomX][0] = 1;
-            c.grid[randomY][j][1] = 0;
-            c.setGrid([...c.grid]);
+            if (i === doorX || [2, 3].includes(grid[wallY][i][0])) continue;
+            grid[wallY][i][0] = 1;
+            c.setGrid(cloneGrid(grid));
             await delay(40);
         }
 
-        await divide(c, x, y, randomX - x, height); // Left
-        await divide(c, randomX + 1, y, x + width - randomX - 1, height); // Right
+        await divide(c, grid, x, y, width, wallY - y); // Top section
+        await divide(c, grid, x, wallY + 1, width, y + height - wallY - 1); // Bottom section
     } else {
+        let possibleXs = [];
+        for (let i = x + 1; i < x + width; i += 2) {
+            possibleXs.push(i);
+        }
+
+        let possibleDoors = [];
+        for (let i = y; i < y + height; i += 2) {
+            possibleDoors.push(i);
+        }
+
+        const wallX = possibleXs[Math.floor(Math.random() * possibleXs.length)];
+        const doorY =
+            possibleDoors[Math.floor(Math.random() * possibleDoors.length)];
+
         for (let i = y; i < y + height; i++) {
-            if (i % 2 === 0) {
-                potentialWalls.push(i);
-            }
-        }
-        for (let j = x; j < x + width; j++) {
-            if (j % 2 !== 0) {
-                potentialDoor.push(j);
-            }
-        }
-
-        const randomY =
-            potentialWalls[Math.floor(Math.random() * potentialWalls.length)];
-        const randomX =
-            potentialDoor[Math.floor(Math.random() * potentialDoor.length)];
-
-        for (let j = x; j < x + width; j++) {
-            if (
-                j === randomX ||
-                c.grid[randomY][j][0] === 2 ||
-                c.grid[randomY][j][0] === 3
-            )
-                continue;
-            c.grid[randomY][j][0] = 1;
-            c.grid[randomY][j][1] = 0;
-            c.setGrid([...c.grid]);
+            if (i === doorY || [2, 3].includes(grid[i][wallX][0])) continue;
+            grid[i][wallX][0] = 1;
+            c.setGrid(cloneGrid(grid));
             await delay(40);
         }
 
-        await divide(c, x, y, width, randomY - y); // Top
-        await divide(c, x, randomY + 1, width, y + height - randomY - 1); // Bottom
+        await divide(c, grid, x, y, wallX - x, height); // Left section
+        await divide(c, grid, wallX + 1, y, x + width - wallX - 1, height); // Right section
     }
 };
 

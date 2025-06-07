@@ -79,15 +79,13 @@ const Dijkstra = async (c, reset) => {
         while (!(row === startRow && col === startCol)) {
             path.push([row, col]);
 
-            
-            totalCost += c.grid[row][col][1];
-
             [row, col] = prev[row][col];
             if (!prev[row] || !prev[row][col]) break;
         }
 
         for (let i = path.length - 1; i > 0; i--) {
             const [pr, pc] = path[i];
+            totalCost += c.grid[row][col][1];
 
             c.setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((r, rowIndex) =>

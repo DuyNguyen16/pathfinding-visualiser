@@ -84,6 +84,7 @@ const Astar = async (c, reset) => {
     }
 
     // Reconstruct path if reachable
+    let count = 0
     if (distance[endR][endC] !== Infinity) {
         const path = [];
         let r = endR;
@@ -93,14 +94,13 @@ const Astar = async (c, reset) => {
         while (!(r === startR && col === startC)) {
             path.push([r, col]);
 
-            totalCost += c.grid[r][col][1];
-
             [r, col] = prev[r][col];
             if (!prev[r] || !prev[r][col]) break;
         }
 
         for (let i = path.length - 1; i > 0; i--) {
             const [pr, pc] = path[i];
+            totalCost += c.grid[r][col][1];
 
             c.setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((row, rowIndex) =>

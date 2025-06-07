@@ -63,11 +63,12 @@ const BreadthFirstSearch = async (c, reset) => {
 
         while (!(s === c.startPos[0] && m === c.startPos[1])) {
             path.push([s, m]);
-            count += 1;
+            
             [s, m] = prev[s][m];
         }
 
         for (let i = path.length - 1; i > 0; i--) {
+            count += 1;
             c.setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((row, r) =>
                     row.map((cell, col) =>
