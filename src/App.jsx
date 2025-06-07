@@ -11,10 +11,10 @@ const getOdd = (n) => (n % 2 === 0 ? n - 1 : n);
 
 const createGrid = (rows, cols, startPos, endPos) => {
     const grid = Array.from({ length: rows }, () =>
-        Array.from({ length: cols }, () => 0)
+        Array.from({ length: cols }, () => [0, 0])
     );
-    grid[startPos[0]][startPos[1]] = 2;
-    grid[endPos[0]][endPos[1]] = 3;
+    grid[startPos[0]][startPos[1]][0] = 2;
+    grid[endPos[0]][endPos[1]][0] = 3;
     return grid;
 };
 
@@ -25,10 +25,11 @@ function App() {
     const [isMovingEnd, setIsMovingEnd] = useState(false);
     const [startPos, setStartPos] = useState([0, 0]);
     const [endPos, setEndPos] = useState([0, 0]);
-    const [algorithms, setAlgorithms] = useState("");
-    const [maze, setMaze] = useState("");
+    const [isPlacingWeight, setIsPlacingWeight] = useState(false);
 
     // Stats
+    const [algorithms, setAlgorithms] = useState("");
+    const [maze, setMaze] = useState("");
     const [pathLength, setPathLength] = useState(0);
 
     const toggleMoveStart = () => {
@@ -39,6 +40,12 @@ function App() {
     const toggleMoveEnd = () => {
         setIsMovingEnd((prev) => !prev);
         setIsMovingStart(false);
+    };
+
+    const togglePlacingWeight = () => {
+        setIsPlacingWeight((prev) => !prev);
+        setIsMovingStart(false);
+        setIsMovingEnd(false);
     };
 
     const initializeGrid = () => {
@@ -83,8 +90,11 @@ function App() {
         setMaze,
         toggleMoveStart,
         toggleMoveEnd,
-        pathLength, 
+        pathLength,
         setPathLength,
+        isPlacingWeight,
+        setIsPlacingWeight,
+        togglePlacingWeight,
     };
 
     return (

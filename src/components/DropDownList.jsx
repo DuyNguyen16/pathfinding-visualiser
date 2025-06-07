@@ -2,6 +2,9 @@ import { algoList, mazeList } from "../algorithms/AlgorithmLists";
 
 const DropDownList = ({ c, type, isRunning }) => {
     const handleSelect = (value) => {
+        c.setIsMovingEnd(false);
+        c.setIsMovingStart(false);
+        c.setIsPlacingWeight(false);
         if (type === "algo") {
             c.setAlgorithms(value); // value is the algo key
         } else {

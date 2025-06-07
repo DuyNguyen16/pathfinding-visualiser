@@ -1,4 +1,4 @@
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const BreadthFirstSearch = async (c, reset) => {
     let queue = [];
@@ -6,7 +6,9 @@ const BreadthFirstSearch = async (c, reset) => {
     let numCol = c.grid[0].length;
     let found = false;
 
-    const visited = Array.from({ length: numRow }, () => Array(numCol).fill(false));
+    const visited = Array.from({ length: numRow }, () =>
+        Array(numCol).fill(false)
+    );
     let prev = Array.from({ length: numRow }, () => Array(numCol).fill([0, 0]));
 
     let row = [-1, 0, 1, 0];
@@ -25,7 +27,7 @@ const BreadthFirstSearch = async (c, reset) => {
             if (neigbourRow < 0 || neigbourRow >= numRow) continue;
             if (neigbourCol < 0 || neigbourCol >= numCol) continue;
             if (visited[neigbourRow][neigbourCol]) continue;
-            if (c.grid[neigbourRow][neigbourCol] === 1) continue;
+            if (c.grid[neigbourRow][neigbourCol][0] === 1) continue;
 
             queue.push([neigbourRow, neigbourCol]);
             visited[neigbourRow][neigbourCol] = true;
@@ -38,8 +40,17 @@ const BreadthFirstSearch = async (c, reset) => {
                 break;
             }
 
-            c.grid[neigbourRow][neigbourCol] = 4;
-            c.setGrid([...c.grid]);
+            c.setGrid((prevGrid) => {
+                const newGrid = prevGrid.map((row, r) =>
+                    row.map((cell, col) =>
+                        r === neigbourRow && col === neigbourCol
+                            ? [4, cell[1]]
+                            : cell
+                    )
+                );
+                return newGrid;
+            });
+
             await delay(1);
         }
     }
@@ -57,8 +68,17 @@ const BreadthFirstSearch = async (c, reset) => {
         }
 
         for (let i = path.length - 1; i > 0; i--) {
-            c.grid[path[i][0]][path[i][1]] = 5;
-            c.setGrid([...c.grid]);
+            c.setGrid((prevGrid) => {
+                const newGrid = prevGrid.map((row, r) =>
+                    row.map((cell, col) =>
+                        r === path[i][0] && col === path[i][1]
+                            ? [5, cell[1]]
+                            : cell
+                    )
+                );
+                return newGrid;
+            });
+
             await delay(40);
         }
 

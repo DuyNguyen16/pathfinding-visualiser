@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { mainContext } from "../App";
 import knightIcon from "../assets/knight.png";
 import princessIcon from "../assets/princess.png";
+import weightIcon from "../assets/weight.png";
 
 const CELL_SIZE = 30;
 
@@ -17,14 +18,8 @@ const Grid = () => {
 
     const placeNode = (rowIndex, colIndex) => {
         c.setGrid((prevGrid) => {
-            let n = 0;
-            const cellValue = c.grid[rowIndex][colIndex];
-
-            if (c.isMovingStart) {
-                n = 2;
-            } else {
-                n = 3;
-            }
+            let n = c.isMovingStart ? 2 : 3;
+            const cellValue = prevGrid[rowIndex][colIndex][0];
 
             if (cellValue === 2 || cellValue === 3) {
                 c.setIsMovingStart(false);
@@ -33,25 +28,44 @@ const Grid = () => {
             }
 
             const newGrid = prevGrid.map((row) =>
-                row.map((cell) => (cell === n ? 0 : cell))
+                row.map(([cellState, weight]) =>
+                    cellState === n ? [0, weight] : [cellState, weight]
+                )
             );
 
+            const oldWeight = prevGrid[rowIndex][colIndex][1];
+
             if (c.isMovingStart) {
-                newGrid[rowIndex][colIndex] = 2;
+                newGrid[rowIndex][colIndex] = [2, oldWeight];
                 c.setStartPos([rowIndex, colIndex]);
                 c.setIsMovingStart(false);
+                return newGrid;
             } else if (c.isMovingEnd) {
-                newGrid[rowIndex][colIndex] = 3;
+                newGrid[rowIndex][colIndex] = [3, oldWeight];
                 c.setEndPos([rowIndex, colIndex]);
                 c.setIsMovingEnd(false);
-            }
+                return newGrid;
+            } else if (c.isPlacingWeight) {
+                if (
+                    prevGrid[rowIndex][colIndex][0] !== 2 &&
+                    prevGrid[rowIndex][colIndex][0] !== 3
+                ) {
+                    const newGridCopy = prevGrid.map((row) =>
+                        row.map((cell) => [...cell])
+                    );
+                    newGridCopy[rowIndex][colIndex] = [0, 5]; // set state to 0 and weight to 5
 
+                    return newGridCopy;
+                }
+                return prevGrid;
+            }
             return newGrid;
         });
     };
 
     const updateCell = (rowIndex, colIndex) => {
-        const cellValue = c.grid[rowIndex][colIndex];
+        const cellValue = c.grid[rowIndex][colIndex][0];
+
         if (
             (cellValue === 2 && !c.isMovingStart) ||
             (cellValue === 3 && !c.isMovingEnd)
@@ -61,12 +75,10 @@ const Grid = () => {
 
         c.setGrid((prevGrid) =>
             prevGrid.map((row, rIdx) =>
-                row.map((cell, cIdx) =>
+                row.map(([cellState, weight], cIdx) =>
                     rIdx === rowIndex && cIdx === colIndex
-                        ? cell === 0
-                            ? 1
-                            : 0
-                        : cell
+                        ? [cellState === 0 ? 1 : 0, weight]
+                        : [cellState, weight]
                 )
             )
         );
@@ -84,7 +96,11 @@ const Grid = () => {
                             key={colIndex}
                             onMouseDown={() => {
                                 setIsMouseDown(true);
-                                if (c.isMovingStart || c.isMovingEnd) {
+                                if (
+                                    c.isMovingStart ||
+                                    c.isMovingEnd ||
+                                    c.isPlacingWeight
+                                ) {
                                     placeNode(rowIndex, colIndex);
                                 } else {
                                     updateCell(rowIndex, colIndex);
@@ -94,23 +110,24 @@ const Grid = () => {
                                 if (
                                     isMouseDown &&
                                     !c.isMovingStart &&
-                                    !c.isMovingEnd
+                                    !c.isMovingEnd &&
+                                    !c.isPlacingWeight
                                 ) {
                                     updateCell(rowIndex, colIndex);
                                 }
                             }}
-                            className={`  ${
-                                cell === 0
-                                    ? "bg-gray-100 border border-gray-300" //normal state 0
-                                    : cell === 1
-                                    ? "bg-[#260F01]" // wall state 1
-                                    : cell === 2
-                                    ? "bg-[#BFA98E] border border-gray-300" // start node state 2
-                                    : cell === 3
-                                    ? "bg-[#BFA98E] border border-gray-300" // end node state 3
-                                    : cell === 4
-                                    ? "bg-[#705740] border border-gray-300" // finding state 4
-                                    : "bg-[#BFA98E] border border-gray-300" // final path state 5
+                            className={`${
+                                cell[0] === 0
+                                    ? "bg-gray-100 border border-gray-300"
+                                    : cell[0] === 1
+                                    ? "bg-[#260F01]"
+                                    : cell[0] === 2
+                                    ? "bg-[#BFA98E] border border-gray-300"
+                                    : cell[0] === 3
+                                    ? "bg-[#BFA98E] border border-gray-300"
+                                    : cell[0] === 4
+                                    ? "bg-[#705740] border border-gray-300"
+                                    : "bg-[#BFA98E] border border-gray-300"
                             }`}
                             style={{
                                 width: CELL_SIZE,
@@ -120,9 +137,10 @@ const Grid = () => {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
+                                position: "relative",
                             }}
                         >
-                            {cell === 2 && (
+                            {cell[0] === 2 && (
                                 <img
                                     src={knightIcon}
                                     alt="Knight"
@@ -133,11 +151,22 @@ const Grid = () => {
                                     }}
                                 />
                             )}
-
-                            {cell === 3 && (
+                            {cell[0] === 3 && (
                                 <img
                                     src={princessIcon}
-                                    alt="princess"
+                                    alt="Princess"
+                                    style={{
+                                        width: "80%",
+                                        height: "80%",
+                                        objectFit: "contain",
+                                    }}
+                                />
+                            )}
+
+                            {cell[1] === 5 && (
+                                <img
+                                    src={weightIcon}
+                                    alt="Princess"
                                     style={{
                                         width: "80%",
                                         height: "80%",

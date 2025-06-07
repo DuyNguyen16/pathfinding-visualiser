@@ -17,7 +17,7 @@ export const DepthFirstSearch = async (c, reset) => {
         count += 1;
         if (reset.current) return;
         const [r, col] = path[i];
-        c.grid[r][col] = 5;
+        c.grid[r][col][0] = 5;
         c.setGrid([...c.grid]);
         await delay(1);
     }
@@ -50,7 +50,7 @@ const dfs = async (c, v, reset) => {
             continue;
         }
 
-        const cell = c.grid[neigbourRow][neigbourCol];
+        const cell = c.grid[neigbourRow][neigbourCol][0];
 
         // Skip walls and visited
         if (cell === 4 || cell === 2 || cell == 1) continue;
@@ -63,7 +63,7 @@ const dfs = async (c, v, reset) => {
         }
 
         // Visit the cell
-        c.grid[neigbourRow][neigbourCol] = 4;
+        c.grid[neigbourRow][neigbourCol][0] = 4;
         c.setGrid([...c.grid]);
         await delay(40);
 

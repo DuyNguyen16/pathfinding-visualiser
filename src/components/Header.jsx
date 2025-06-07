@@ -4,27 +4,27 @@ import DropDownList from "./DropDownList";
 import BreadthFirstSearch from "../algorithms/search/BreadthFirstSearch";
 import RecursiveDivision from "../algorithms/maze/RecursiveDivision";
 import DepthFirstSearch from "../algorithms/search/DepthFirstSearch";
-
+import Dijkstra from "../algorithms/search/Dijkstra";
 
 const Header = () => {
     const c = useContext(mainContext);
     const [showAlgoDropdown, setShowAlgoDropdown] = useState(false);
     const [showMazeDropdown, setShowMazeDropdown] = useState(false);
     const [isRunning, setIsRunning] = useState(false);
+    
     const [isMaze, setIsMaze] = useState(false);
     const resetRef = useRef(false);
 
     const clearGrid = () => {
         c.setGrid((prevGrid) =>
             prevGrid.map((row, rIdx) =>
-                row.map(
-                    (cell, cIdx) =>
-                        rIdx === c.startPos[0] && cIdx === c.startPos[1]
-                            ? 2 // Start
-                            : rIdx === c.endPos[0] && cIdx === c.endPos[1]
-                            ? 3 // End
-                            : 0 // Empty
-                )
+                row.map((node, cIdx) => {
+                    if (rIdx === c.startPos[0] && cIdx === c.startPos[1])
+                        return [2, node[0]];
+                    if (rIdx === c.endPos[0] && cIdx === c.endPos[1])
+                        return [3, node[0]];
+                    return [0, node[0]];
+                })
             )
         );
     };
@@ -32,12 +32,14 @@ const Header = () => {
     const clearPath = () => {
         c.setGrid((prevGrid) =>
             prevGrid.map((row, rIdx) =>
-                row.map((cell, cIdx) => {
+                row.map(([state, weight], cIdx) => {
                     if (rIdx === c.startPos[0] && cIdx === c.startPos[1])
-                        return 2;
-                    if (rIdx === c.endPos[0] && cIdx === c.endPos[1]) return 3;
-                    // Clear visited (4) and path (5)
-                    return cell === 4 || cell === 5 ? 0 : cell;
+                        return [2, weight];
+                    if (rIdx === c.endPos[0] && cIdx === c.endPos[1])
+                        return [3, weight];
+                    return state === 4 || state === 5
+                        ? [0, weight]
+                        : [state, weight];
                 })
             )
         );
@@ -46,20 +48,26 @@ const Header = () => {
     const stopVisual = () => {
         c.setGrid((prevGrid) =>
             prevGrid.map((row, rIdx) =>
-                row.map((cell, cIdx) => {
+                row.map(([state, weight], cIdx) => {
                     if (rIdx === c.startPos[0] && cIdx === c.startPos[1])
-                        return 2;
-                    if (rIdx === c.endPos[0] && cIdx === c.endPos[1]) return 3;
-                    return cell === 1 ? 1 : 0;
+                        return [2, weight];
+                    if (rIdx === c.endPos[0] && cIdx === c.endPos[1])
+                        return [3, weight];
+                    return state === 1 ? [1, weight] : [0, weight];
                 })
             )
         );
     };
 
     const handleVisualise = async () => {
+        c.setIsMovingEnd(false);
+        c.setIsMovingStart(false);
+        c.setIsPlacingWeight(false);
+
         setShowAlgoDropdown(false);
         setShowMazeDropdown(false);
         setIsRunning(true);
+
         c.setPathLength(0);
         resetRef.current = false;
 
@@ -71,10 +79,10 @@ const Header = () => {
                 await DepthFirstSearch(c, resetRef);
                 break;
             case "dijkstra":
-                // await Dijkstra(c, resetRef);
+                await Dijkstra(c, resetRef);
                 break;
             case "astar":
-                // await AStarSearch(c, resetRef); // <-- Add this when ready
+                // await AStarSearch(c, resetRef);
                 break;
             default:
                 console.warn("No algorithm selected or matched.");
@@ -151,9 +159,7 @@ const Header = () => {
 
             <div className="flex flex-wrap justify-center lg:justify-end gap-2 text-xs sm:text-sm">
                 <button
-                    onClick={() => {
-                        clearPath();
-                    }}
+                    onClick={clearPath}
                     className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
                     disabled={isRunning || isMaze}
                 >
@@ -194,6 +200,18 @@ const Header = () => {
                 >
                     {c.isMovingEnd ? "Place End: ON" : "Move End"}
                 </button>
+
+                {c.algorithms == "dijkstra" && <button
+                    onClick={c.togglePlacingWeight}
+                    className={`px-3 py-1 rounded cursor-pointer ${
+                        c.isPlacingWeight
+                            ? "bg-yellow-400 hover:bg-yellow-500"
+                            : "bg-gray-400 hover:bg-gray-500"
+                    }`}
+                    disabled={isRunning || isMaze}
+                >
+                    {c.isPlacingWeight ? "Place Weight: ON" : "Place Weight"}
+                </button>}
 
                 {!isRunning ? (
                     <button

@@ -6,11 +6,11 @@ const RecursiveDivision = async (c) => {
 
     // Top and bottom walls
     for (let i = 0; i < cols; i++) {
-        if (c.grid[0][i] !== 2 && c.grid[0][i] !== 3) {
-            c.grid[0][i] = 1;
+        if (c.grid[0][i][0] !== 2 && c.grid[0][i][0] !== 3) {
+            c.grid[0][i][0] = 1;
         }
-        if (c.grid[rows - 1][i] !== 2 && c.grid[rows - 1][i] !== 3) {
-            c.grid[rows - 1][i] = 1;
+        if (c.grid[rows - 1][i][0] !== 2 && c.grid[rows - 1][i][0] !== 3) {
+            c.grid[rows - 1][i][0] = 1;
         }
         c.setGrid([...c.grid]);
         await delay(40);
@@ -18,11 +18,11 @@ const RecursiveDivision = async (c) => {
 
     // Left and right walls
     for (let j = 1; j < rows - 1; j++) {
-        if (c.grid[j][0] !== 2 && c.grid[j][0] !== 3) {
-            c.grid[j][0] = 1;
+        if (c.grid[j][0][0] !== 2 && c.grid[j][0][0] !== 3) {
+            c.grid[j][0][0] = 1;
         }
-        if (c.grid[j][cols - 1] !== 2 && c.grid[j][cols - 1] !== 3) {
-            c.grid[j][cols - 1] = 1;
+        if (c.grid[j][cols - 1][0] !== 2 && c.grid[j][cols - 1][0] !== 3) {
+            c.grid[j][cols - 1][0] = 1;
         }
         c.setGrid([...c.grid]);
         await delay(40);
@@ -33,16 +33,16 @@ const RecursiveDivision = async (c) => {
 
 const divide = async (c, x, y, width, height) => {
     if (width <= 2 || height <= 2) return;
+
     let potentialWalls = [];
     let potentialDoor = [];
 
     if (width > height) {
         for (let i = x; i < x + width; i++) {
-            if (i % 2 == 0) {
+            if (i % 2 === 0) {
                 potentialWalls.push(i);
             }
         }
-
         for (let j = y; j < y + height; j++) {
             if (j % 2 !== 0) {
                 potentialDoor.push(j);
@@ -53,25 +53,28 @@ const divide = async (c, x, y, width, height) => {
             potentialWalls[Math.floor(Math.random() * potentialWalls.length)];
         const randomY =
             potentialDoor[Math.floor(Math.random() * potentialDoor.length)];
-        const wallX = randomX;
 
         for (let j = y; j < y + height; j++) {
-            if (j == randomY || c.grid[j][wallX] == 2 || c.grid[j][wallX] == 3)
+            if (
+                j === randomY ||
+                c.grid[j][randomX][0] === 2 ||
+                c.grid[j][randomX][0] === 3
+            )
                 continue;
-            c.grid[j][wallX] = 1;
+            c.grid[j][randomX][0] = 1;
+            c.grid[randomY][j][1] = 0;
             c.setGrid([...c.grid]);
             await delay(40);
         }
 
-        await divide(c, x, y, wallX - x, height); // Left
-        await divide(c, wallX + 1, y, x + width - wallX - 1, height); // Right
+        await divide(c, x, y, randomX - x, height); // Left
+        await divide(c, randomX + 1, y, x + width - randomX - 1, height); // Right
     } else {
         for (let i = y; i < y + height; i++) {
-            if (i % 2 == 0) {
+            if (i % 2 === 0) {
                 potentialWalls.push(i);
             }
         }
-
         for (let j = x; j < x + width; j++) {
             if (j % 2 !== 0) {
                 potentialDoor.push(j);
@@ -82,18 +85,22 @@ const divide = async (c, x, y, width, height) => {
             potentialWalls[Math.floor(Math.random() * potentialWalls.length)];
         const randomX =
             potentialDoor[Math.floor(Math.random() * potentialDoor.length)];
-        const wallX = randomY;
 
         for (let j = x; j < x + width; j++) {
-            if (j == randomX || c.grid[wallX][j] == 2 || c.grid[wallX][j] == 3)
+            if (
+                j === randomX ||
+                c.grid[randomY][j][0] === 2 ||
+                c.grid[randomY][j][0] === 3
+            )
                 continue;
-            c.grid[wallX][j] = 1;
+            c.grid[randomY][j][0] = 1;
+            c.grid[randomY][j][1] = 0;
             c.setGrid([...c.grid]);
             await delay(40);
         }
 
-        await divide(c, x, y, width, wallX - y); // Top
-        await divide(c, x, wallX + 1, width, y + height - wallX - 1); // Bottom
+        await divide(c, x, y, width, randomY - y); // Top
+        await divide(c, x, randomY + 1, width, y + height - randomY - 1); // Bottom
     }
 };
 
