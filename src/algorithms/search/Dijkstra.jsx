@@ -1,6 +1,6 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const Dijkstra = async (c, reset) => {
+const Dijkstra = async (c, reset, speed) => {
     const numRow = c.grid.length;
     const numCol = c.grid[0].length;
 
@@ -45,7 +45,7 @@ const Dijkstra = async (c, reset) => {
                 );
                 return newGrid;
             });
-            await delay(1);
+            await delay(speed);
         }
 
         if (row === endRow && col === endCol) break;
@@ -106,7 +106,7 @@ const Dijkstra = async (c, reset) => {
             });
 
             if (reset.current) return;
-            await delay(40);
+            await delay(speed);
         }
 
         c.setPathLength(totalCost - 1);

@@ -1,6 +1,6 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const BreadthFirstSearch = async (c, reset) => {
+const BreadthFirstSearch = async (c, reset, speed) => {
     let queue = [];
     let numRow = c.grid.length;
     let numCol = c.grid[0].length;
@@ -51,7 +51,7 @@ const BreadthFirstSearch = async (c, reset) => {
                 return newGrid;
             });
 
-            await delay(1);
+            await delay(speed);
         }
     }
 
@@ -80,7 +80,7 @@ const BreadthFirstSearch = async (c, reset) => {
                 return newGrid;
             });
 
-            await delay(40);
+            await delay(speed);
         }
 
         c.setPathLength(count - 1);

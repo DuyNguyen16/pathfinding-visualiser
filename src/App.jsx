@@ -26,12 +26,16 @@ function App() {
     const [startPos, setStartPos] = useState([0, 0]);
     const [endPos, setEndPos] = useState([0, 0]);
     const [isPlacingWeight, setIsPlacingWeight] = useState(false);
+    const [isSearch, setIsSearch] = useState(false);
+    const [isMaze, setIsMaze] = useState(false);
 
     // Stats
     const [algorithms, setAlgorithms] = useState("");
     const [maze, setMaze] = useState("");
     const [pathLength, setPathLength] = useState(0);
     const [isNumberOn, setIsNumberOn] = useState(false);
+    const [mazeSpeed, setMazeSpeed] = useState(1);
+    const [searchSpeed, setSearchSpeed] = useState(1);
 
     const toggleMoveStart = () => {
         setIsMovingStart((prev) => !prev);
@@ -98,13 +102,20 @@ function App() {
         togglePlacingWeight,
         isNumberOn,
         setIsNumberOn,
+        mazeSpeed,
+        setMazeSpeed,
+        searchSpeed,
+        setSearchSpeed,
+        isSearch,
+        setIsSearch,
+        isMaze,
+        setIsMaze,
     };
 
     return (
         <mainContext.Provider value={context}>
             <main className="bg-[#DBD3C5] min-h-screen w-screen flex flex-col">
                 <Header />
-                {/* Responsive layout: col on desktop, row on mobile */}
                 <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
                     <div className="md:w-4/5 w-full flex justify-center items-center overflow-auto">
                         <Grid />

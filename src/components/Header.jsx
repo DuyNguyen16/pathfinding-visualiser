@@ -11,9 +11,6 @@ const Header = () => {
     const c = useContext(mainContext);
     const [showAlgoDropdown, setShowAlgoDropdown] = useState(false);
     const [showMazeDropdown, setShowMazeDropdown] = useState(false);
-    const [isRunning, setIsRunning] = useState(false);
-
-    const [isMaze, setIsMaze] = useState(false);
     const resetRef = useRef(false);
 
     const clearGrid = () => {
@@ -55,46 +52,46 @@ const Header = () => {
 
         setShowAlgoDropdown(false);
         setShowMazeDropdown(false);
-        setIsRunning(true);
+        c.setIsSearch(true);
 
         c.setPathLength(0);
         resetRef.current = false;
 
         switch (c.algorithms) {
             case "bfs":
-                await BreadthFirstSearch(c, resetRef);
+                await BreadthFirstSearch(c, resetRef, c.searchSpeed);
                 break;
             case "dfs":
-                await DepthFirstSearch(c, resetRef);
+                await DepthFirstSearch(c, resetRef, c.searchSpeed);
                 break;
             case "dijkstra":
-                await Dijkstra(c, resetRef);
+                await Dijkstra(c, resetRef, c.searchSpeed);
                 break;
             case "astar":
-                await Astar(c, resetRef);
+                await Astar(c, resetRef, c.searchSpeed);
                 break;
             default:
                 console.warn("No algorithm selected or matched.");
         }
 
-        setIsRunning(false);
+        c.setIsSearch(false);
     };
 
     useEffect(() => {
         const runMaze = async () => {
-            setIsMaze(true);
+            c.setIsMaze(true);
             setShowAlgoDropdown(false);
             setShowMazeDropdown(false);
 
             switch (c.maze) {
                 case "recursive-division":
-                    await RecursiveDivision(c);
+                    await RecursiveDivision(c, c.mazeSpeed);
                     break;
                 default:
                     console.warn("No maze selected.");
             }
 
-            setIsMaze(false);
+            c.setIsMaze(false);
         };
 
         if (c.maze) runMaze();
@@ -124,7 +121,7 @@ const Header = () => {
                         <DropDownList
                             c={c}
                             type={"algo"}
-                            isRunning={isRunning}
+                            isRunning={c.isSearch}
                         />
                     </div>
                 )}
@@ -135,13 +132,13 @@ const Header = () => {
                         setShowMazeDropdown((prev) => !prev);
                         setShowAlgoDropdown(false);
                     }}
-                    disabled={isRunning}
+                    disabled={c.isSearch}
                 >
                     Maze & Patterns ▼
                 </button>
                 {showMazeDropdown && (
                     <div className="absolute top-full sm:left-26 left-0 z-10 mt-1 w-48">
-                        <DropDownList c={c} type={"maze"} isRunning={isMaze} />
+                        <DropDownList c={c} type={"maze"} isRunning={c.isMaze} />
                     </div>
                 )}
             </div>
@@ -152,7 +149,7 @@ const Header = () => {
                         clearPath();
                     }}
                     className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
-                    disabled={isRunning || isMaze}
+                    disabled={c.isSearch || c.isMaze}
                 >
                     Clear Path
                 </button>
@@ -162,7 +159,7 @@ const Header = () => {
                         c.setMaze("");
                     }}
                     className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
-                    disabled={isRunning || isMaze}
+                    disabled={c.isSearch || c.isMaze}
                 >
                     Clear Grid
                 </button>
@@ -174,7 +171,7 @@ const Header = () => {
                             ? "bg-yellow-400 hover:bg-yellow-500"
                             : "bg-gray-400 hover:bg-gray-500"
                     }`}
-                    disabled={isRunning || isMaze}
+                    disabled={c.isSearch || c.isMaze}
                 >
                     {c.isMovingStart ? "Place Start: ON" : "Move Start"}
                 </button>
@@ -186,7 +183,7 @@ const Header = () => {
                             ? "bg-yellow-400 hover:bg-yellow-500"
                             : "bg-gray-400 hover:bg-gray-500"
                     }`}
-                    disabled={isRunning || isMaze}
+                    disabled={c.isSearch || c.isMaze}
                 >
                     {c.isMovingEnd ? "Place End: ON" : "Move End"}
                 </button>
@@ -199,7 +196,7 @@ const Header = () => {
                                 ? "bg-yellow-400 hover:bg-yellow-500"
                                 : "bg-gray-400 hover:bg-gray-500"
                         }`}
-                        disabled={isRunning || isMaze}
+                        disabled={c.isSearch || c.isMaze}
                     >
                         {c.isPlacingWeight
                             ? "Place Weight: ON"
@@ -207,9 +204,9 @@ const Header = () => {
                     </button>
                 )}
 
-                {!isRunning ? (
+                {!c.isSearch ? (
                     <button
-                        disabled={!c.algorithms || isMaze}
+                        disabled={!c.algorithms || c.isMaze}
                         onClick={handleVisualise}
                         className={`px-3 py-1 rounded ${
                             c.algorithms

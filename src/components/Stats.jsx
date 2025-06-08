@@ -1,12 +1,56 @@
 import { useContext } from "react";
 import { mainContext } from "../App";
 import { algoList, mazeList } from "../algorithms/AlgorithmLists";
+import {
+    mazeSpeed as mazeSpeedMap,
+    searchSpeed as searchSpeedMap,
+} from "../algorithms/Speed";
+
+const mazeSpeedOptions = Object.entries(mazeSpeedMap);
+const searchSpeedOptions = Object.entries(searchSpeedMap);
 
 const Stats = () => {
     const c = useContext(mainContext);
 
     const selectedAlgo = algoList.find((algo) => algo.key === c.algorithms);
     const selectedMaze = mazeList.find((algo) => algo.key === c.maze);
+
+    const getMazeSpeedLabel = () => {
+        const entry = mazeSpeedOptions.find(
+            (option) => option[1] === c.mazeSpeed
+        );
+        return entry ? entry[0] : "Average";
+    };
+
+    // Helper to get label from value for search speed
+    const getSearchSpeedLabel = () => {
+        const entry = searchSpeedOptions.find(
+            (option) => option[1] === c.searchSpeed
+        );
+        return entry ? entry[0] : "Average";
+    };
+
+    // Toggle maze speed label & value
+    const toggleMazeSpeed = () => {
+        const currentLabel = getMazeSpeedLabel();
+        const index = mazeSpeedOptions.findIndex(
+            ([label]) => label === currentLabel
+        );
+        const nextIndex = (index + 1) % mazeSpeedOptions.length;
+        const nextOption = mazeSpeedOptions[nextIndex];
+        c.setMazeSpeed(nextOption[1]);
+    };
+
+    // Toggle search speed label & value
+    const toggleSearchSpeed = () => {
+        const currentLabel = getSearchSpeedLabel();
+        const index = searchSpeedOptions.findIndex(
+            ([label]) => label === currentLabel
+        );
+        const nextIndex = (index + 1) % searchSpeedOptions.length;
+        const nextOption = searchSpeedOptions[nextIndex];
+        c.setSearchSpeed(nextOption[1]);
+    };
 
     return (
         <div
@@ -19,15 +63,7 @@ const Stats = () => {
             >
                 Stats
             </h2>
-            <div>
-                <button>Maze Gen Speed</button>
-                <button
-                    className="bg-amber-600 px-4 py-1 rounded cursor-pointer hover:bg-amber-700 duration-150"
-                    onClick={() => c.setIsNumberOn((prev) => !prev)}
-                >
-                    Numbers on Grid
-                </button>
-            </div>
+
             <div
                 className="w-full py-5 px-6 rounded-lg shadow-inner"
                 style={{ backgroundColor: "var(--color-wallBG)" }}
@@ -75,6 +111,30 @@ const Stats = () => {
                 <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
                     Path Length: {c.pathLength === "" ? "0" : c.pathLength}
                 </p>
+            </div>
+            <div className="flex flex-col gap-2">
+                <button
+                    onClick={toggleSearchSpeed}
+                    disabled={c.isSearch || c.isMaze}
+                    className="px-3 py-1 bg-green-500 hover:bg-green-600 rounded text-white"
+                >
+                    Search Speed: {getSearchSpeedLabel()}
+                </button>
+                <button
+                    onClick={toggleMazeSpeed}
+                    disabled={c.isSearch || c.isMaze}
+                    className="px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded text-white "
+                >
+                    Maze Gen Speed: {getMazeSpeedLabel()}
+                </button>
+
+                <button
+                    onClick={() => c.setIsNumberOn((prev) => !prev)}
+                    disabled={c.isSearch || c.isMaze}
+                    className="bg-amber-600 px-4 py-1 rounded cursor-pointer hover:bg-amber-700 duration-150"
+                >
+                    Numbers on Grid
+                </button>
             </div>
         </div>
     );

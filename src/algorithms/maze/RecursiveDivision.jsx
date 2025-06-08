@@ -3,7 +3,7 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // Helper to deeply clone a grid
 const cloneGrid = (grid) => grid.map((row) => row.map((cell) => [...cell]));
 
-const RecursiveDivision = async (c) => {
+const RecursiveDivision = async (c, speed) => {
     const rows = c.grid.length;
     const cols = c.grid[0].length;
 
@@ -18,7 +18,7 @@ const RecursiveDivision = async (c) => {
             newGrid[rows - 1][i][0] = 1;
         }
         c.setGrid(cloneGrid(newGrid));
-        // await delay(40);
+        if (speed !== 0) await delay(speed);
     }
 
     // Left and right walls
@@ -30,14 +30,14 @@ const RecursiveDivision = async (c) => {
             newGrid[j][cols - 1][0] = 1;
         }
         c.setGrid(cloneGrid(newGrid));
-        // await delay(40);
+        if (speed !== 0) await delay(speed);
     }
 
-    await divide(c, newGrid, 1, 1, cols - 2, rows - 2);
+    await divide(c, newGrid, 1, 1, cols - 2, rows - 2, speed);
 };
 
 // Recursive division function
-const divide = async (c, grid, x, y, width, height) => {
+const divide = async (c, grid, x, y, width, height, speed) => {
     if (width <= 2 || height <= 2) return;
 
     if (width <= height) {
@@ -59,11 +59,19 @@ const divide = async (c, grid, x, y, width, height) => {
             if (i === doorX || [2, 3].includes(grid[wallY][i][0])) continue;
             grid[wallY][i][0] = 1;
             c.setGrid(cloneGrid(grid));
-            // await delay(40);
+            if (speed !== 0) await delay(speed);
         }
 
-        await divide(c, grid, x, y, width, wallY - y); // Top section
-        await divide(c, grid, x, wallY + 1, width, y + height - wallY - 1); // Bottom section
+        await divide(c, grid, x, y, width, wallY - y, speed); // Top section
+        await divide(
+            c,
+            grid,
+            x,
+            wallY + 1,
+            width,
+            y + height - wallY - 1,
+            speed
+        ); // Bottom section
     } else {
         let possibleXs = [];
         for (let i = x + 1; i < x + width; i += 2) {
@@ -83,11 +91,19 @@ const divide = async (c, grid, x, y, width, height) => {
             if (i === doorY || [2, 3].includes(grid[i][wallX][0])) continue;
             grid[i][wallX][0] = 1;
             c.setGrid(cloneGrid(grid));
-            // await delay(40);
+            if (speed !== 0) await delay(speed);
         }
 
-        await divide(c, grid, x, y, wallX - x, height); // Left section
-        await divide(c, grid, wallX + 1, y, x + width - wallX - 1, height); // Right section
+        await divide(c, grid, x, y, wallX - x, height, speed); // Left section
+        await divide(
+            c,
+            grid,
+            wallX + 1,
+            y,
+            x + width - wallX - 1,
+            height,
+            speed
+        ); // Right section
     }
 };
 

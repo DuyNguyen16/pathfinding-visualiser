@@ -1,6 +1,6 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const DepthFirstSearch = async (c, reset) => {
+export const DepthFirstSearch = async (c, reset, speed) => {
     const visited = Array.from({ length: c.grid.length }, () =>
         Array(c.grid[0].length).fill(false)
     );
@@ -13,7 +13,6 @@ export const DepthFirstSearch = async (c, reset) => {
         if (visited[r][col]) return;
         visited[r][col] = true;
 
-        
         if (c.grid[r][col][0] !== 2 && c.grid[r][col][0] !== 3) {
             c.setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((row, ri) =>
@@ -23,7 +22,7 @@ export const DepthFirstSearch = async (c, reset) => {
                 );
                 return newGrid;
             });
-            await delay(40);
+            await delay(speed);
         }
 
         path.push([r, col]);
@@ -78,7 +77,7 @@ export const DepthFirstSearch = async (c, reset) => {
         });
 
         count++;
-        await delay(40);
+        await delay(speed);
     }
 
     c.setPathLength(count - 1);

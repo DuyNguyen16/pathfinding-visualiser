@@ -1,6 +1,6 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const Astar = async (c, reset) => {
+const Astar = async (c, reset, speed) => {
     const numRow = c.grid.length;
     const numCol = c.grid[0].length;
 
@@ -47,7 +47,7 @@ const Astar = async (c, reset) => {
                 );
                 return newGrid;
             });
-            await delay(1);
+            await delay(speed);
         }
 
         if (row === endR && col === endC) break;
@@ -113,7 +113,7 @@ const Astar = async (c, reset) => {
             });
 
             if (reset.current) return;
-            await delay(40);
+            await delay(speed);
         }
 
         c.setPathLength(totalCost - 1);
