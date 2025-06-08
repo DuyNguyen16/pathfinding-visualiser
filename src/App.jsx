@@ -31,6 +31,7 @@ function App() {
     const [algorithms, setAlgorithms] = useState("");
     const [maze, setMaze] = useState("");
     const [pathLength, setPathLength] = useState(0);
+    const [isNumberOn, setIsNumberOn] = useState(false);
 
     const toggleMoveStart = () => {
         setIsMovingStart((prev) => !prev);
@@ -95,6 +96,8 @@ function App() {
         isPlacingWeight,
         setIsPlacingWeight,
         togglePlacingWeight,
+        isNumberOn,
+        setIsNumberOn,
     };
 
     return (

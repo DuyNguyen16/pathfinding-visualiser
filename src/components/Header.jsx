@@ -21,9 +21,9 @@ const Header = () => {
             prevGrid.map((row, rIdx) =>
                 row.map((node, cIdx) => {
                     if (rIdx === c.startPos[0] && cIdx === c.startPos[1])
-                        return [2, node[0]];
+                        return [2, node[1]];
                     if (rIdx === c.endPos[0] && cIdx === c.endPos[1])
-                        return [3, node[0]];
+                        return [3, node[1]];
                     return [0, 1];
                 })
             )
@@ -191,22 +191,21 @@ const Header = () => {
                     {c.isMovingEnd ? "Place End: ON" : "Move End"}
                 </button>
 
-                {c.algorithms == "dijkstra" ||
-                    (c.algorithms == "astar" && (
-                        <button
-                            onClick={c.togglePlacingWeight}
-                            className={`px-3 py-1 rounded cursor-pointer ${
-                                c.isPlacingWeight
-                                    ? "bg-yellow-400 hover:bg-yellow-500"
-                                    : "bg-gray-400 hover:bg-gray-500"
-                            }`}
-                            disabled={isRunning || isMaze}
-                        >
-                            {c.isPlacingWeight
-                                ? "Place Weight: ON"
-                                : "Place Weight"}
-                        </button>
-                    ))}
+                {(c.algorithms == "dijkstra" || c.algorithms == "astar") && (
+                    <button
+                        onClick={c.togglePlacingWeight}
+                        className={`px-3 py-1 rounded cursor-pointer ${
+                            c.isPlacingWeight
+                                ? "bg-yellow-400 hover:bg-yellow-500"
+                                : "bg-gray-400 hover:bg-gray-500"
+                        }`}
+                        disabled={isRunning || isMaze}
+                    >
+                        {c.isPlacingWeight
+                            ? "Place Weight: ON"
+                            : "Place Weight"}
+                    </button>
+                )}
 
                 {!isRunning ? (
                     <button

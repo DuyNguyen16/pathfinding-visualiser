@@ -18,7 +18,7 @@ const RecursiveDivision = async (c) => {
             newGrid[rows - 1][i][0] = 1;
         }
         c.setGrid(cloneGrid(newGrid));
-        await delay(40);
+        // await delay(40);
     }
 
     // Left and right walls
@@ -30,7 +30,7 @@ const RecursiveDivision = async (c) => {
             newGrid[j][cols - 1][0] = 1;
         }
         c.setGrid(cloneGrid(newGrid));
-        await delay(40);
+        // await delay(40);
     }
 
     await divide(c, newGrid, 1, 1, cols - 2, rows - 2);
@@ -59,7 +59,7 @@ const divide = async (c, grid, x, y, width, height) => {
             if (i === doorX || [2, 3].includes(grid[wallY][i][0])) continue;
             grid[wallY][i][0] = 1;
             c.setGrid(cloneGrid(grid));
-            await delay(40);
+            // await delay(40);
         }
 
         await divide(c, grid, x, y, width, wallY - y); // Top section
@@ -83,7 +83,7 @@ const divide = async (c, grid, x, y, width, height) => {
             if (i === doorY || [2, 3].includes(grid[i][wallX][0])) continue;
             grid[i][wallX][0] = 1;
             c.setGrid(cloneGrid(grid));
-            await delay(40);
+            // await delay(40);
         }
 
         await divide(c, grid, x, y, wallX - x, height); // Left section

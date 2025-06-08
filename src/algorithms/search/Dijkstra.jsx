@@ -7,14 +7,17 @@ const Dijkstra = async (c, reset) => {
     const distance = Array.from({ length: numRow }, () =>
         Array(numCol).fill(Infinity)
     );
-    const prev = Array.from({ length: numRow }, () =>
-        Array(numCol).fill([0, 0])
+
+    const visited = Array.from({ length: numRow }, () =>
+        Array(numCol).fill(false)
     );
+
+    const prev = Array.from({ length: numRow }, () => Array(numCol).fill(null));
 
     const rowDirection = [-1, 0, 1, 0];
     const colDirection = [0, 1, 0, -1];
 
-    const compare = (a, b) => a[0] - b[0]; // min-heap based on distance
+    const compare = (a, b) => a[0] - b[0];
 
     const pq = [];
     const [startRow, startCol] = c.startPos;
@@ -25,10 +28,11 @@ const Dijkstra = async (c, reset) => {
 
     while (pq.length > 0) {
         pq.sort(compare);
-        const [dist, row, col] = pq.shift();
+        const [_, row, col] = pq.shift();
 
         if (reset.current) return;
-        if (c.grid[row][col][0] === 4) continue;
+        if (visited[row][col]) continue;
+        visited[row][col] = true;
 
         if (c.grid[row][col][0] !== 2 && c.grid[row][col][0] !== 3) {
             c.setGrid((prevGrid) => {
@@ -50,16 +54,22 @@ const Dijkstra = async (c, reset) => {
             const neighbourRow = row + rowDirection[i];
             const neighbourCol = col + colDirection[i];
 
-            if (neighbourRow < 0 || neighbourRow >= numRow) continue;
-            if (neighbourCol < 0 || neighbourCol >= numCol) continue;
             if (
-                c.grid[neighbourRow][neighbourCol][0] === 4 ||
+                neighbourRow < 0 ||
+                neighbourRow >= numRow ||
+                neighbourCol < 0 ||
+                neighbourCol >= numCol
+            )
+                continue;
+
+            if (
+                visited[neighbourRow][neighbourCol] ||
                 c.grid[neighbourRow][neighbourCol][0] === 1
             )
                 continue;
 
             const weight = c.grid[neighbourRow][neighbourCol][1];
-            const newDist = dist + weight;
+            const newDist = distance[row][col] + weight;
 
             if (newDist < distance[neighbourRow][neighbourCol]) {
                 distance[neighbourRow][neighbourCol] = newDist;
@@ -78,14 +88,13 @@ const Dijkstra = async (c, reset) => {
 
         while (!(row === startRow && col === startCol)) {
             path.push([row, col]);
-
             [row, col] = prev[row][col];
             if (!prev[row] || !prev[row][col]) break;
         }
 
         for (let i = path.length - 1; i > 0; i--) {
             const [pr, pc] = path[i];
-            totalCost += c.grid[row][col][1];
+            totalCost += c.grid[pr][pc][1];
 
             c.setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((r, rowIndex) =>

@@ -10,15 +10,24 @@ const Stats = () => {
 
     return (
         <div
-            className="w-full h-full p-6 shadow-md rounded-md"
+            className="w-full h-full p-6 shadow-md rounded-md flex flex-col gap-4"
             style={{ backgroundColor: "var(--color-backgroundBG)" }}
         >
             <h2
-                className="text-2xl font-extrabold mb-6"
+                className="text-2xl font-extrabold"
                 style={{ color: "#E8E0D1" }}
             >
                 Stats
             </h2>
+            <div>
+                <button>Maze Gen Speed</button>
+                <button
+                    className="bg-amber-600 px-4 py-1 rounded cursor-pointer hover:bg-amber-700 duration-150"
+                    onClick={() => c.setIsNumberOn((prev) => !prev)}
+                >
+                    Numbers on Grid
+                </button>
+            </div>
             <div
                 className="w-full py-5 px-6 rounded-lg shadow-inner"
                 style={{ backgroundColor: "var(--color-wallBG)" }}

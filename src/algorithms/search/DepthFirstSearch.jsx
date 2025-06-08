@@ -81,7 +81,7 @@ export const DepthFirstSearch = async (c, reset) => {
         await delay(40);
     }
 
-    c.setPathLength(count);
+    c.setPathLength(count - 1);
 };
 
 export default DepthFirstSearch;
