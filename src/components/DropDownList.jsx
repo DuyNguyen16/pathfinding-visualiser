@@ -13,7 +13,7 @@ const DropDownList = ({ c, type, isRunning}) => {
     };
 
     return (
-        <div className="bg-[#F4A259] border shadow-md rounded p-2">
+        <div className={`bg-[#F4A259] border shadow-md rounded p-2 ${type !== "algo" && "lg:w-68"}`}>
             {type === "algo"
                 ? algoList.map((value) => (
                     <button
