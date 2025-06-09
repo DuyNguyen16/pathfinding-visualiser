@@ -31,7 +31,7 @@ const RandomMaze = async (c, speed, density = 0.2) => {
         const [r, col] = shuffledPath[i];
         newGrid[r][col] = [1, 1];
         c.setGrid(cloneGrid(newGrid));
-        if (speed !== 0) await delay(speed);
+        if (speed !== 0) await delay(speed + 39);
     }
 
     c.setGrid(cloneGrid(newGrid));

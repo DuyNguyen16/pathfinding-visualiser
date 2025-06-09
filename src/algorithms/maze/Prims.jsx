@@ -81,7 +81,7 @@ const Prims = async (c, speed) => {
 
             // Update the grid visually
             c.setGrid(cloneGrid(newGrid));
-            if (speed !== 0) await delay(speed);
+            if (speed !== 0) await delay(speed + 39);
             
             // Add the neighbor's walls to the wall list
             addCellWalls(r2, c2);

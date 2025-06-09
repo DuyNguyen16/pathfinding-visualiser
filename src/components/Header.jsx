@@ -10,6 +10,7 @@ import RandomisedDFS from "../algorithms/maze/RandomisedDFS";
 import RandomWeightPlacement from "../algorithms/maze/RandomWeightPlacement";
 import Prims from "../algorithms/maze/Prims";
 import RandomMaze from "../algorithms/maze/RandomMaze";
+import InvertedRDFS from "../algorithms/maze/InvertedRDFS";
 
 const Header = () => {
     const c = useContext(mainContext);
@@ -100,6 +101,9 @@ const Header = () => {
                     break;
                 case "randomised-dfs":
                     await RandomisedDFS(c, c.mazeSpeed);
+                    break;
+                case "inverted-rdfs":
+                    await InvertedRDFS(c, c.mazeSpeed);
                     break;
                 case "prims":
                     await Prims(c, c.mazeSpeed);

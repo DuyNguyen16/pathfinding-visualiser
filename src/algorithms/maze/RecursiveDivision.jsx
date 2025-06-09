@@ -98,7 +98,7 @@ const divide = async (c, grid, x, y, width, height, speed) => {
             if (i === doorY || [2, 3].includes(grid[i][wallX][0])) continue;
             grid[i][wallX][0] = 1;
             c.setGrid(cloneGrid(grid));
-            if (speed !== 0) await delay(speed);
+            if (speed !== 0) await delay(speed + 39);
         }
 
         await divide(c, grid, x, y, wallX - x, height, speed); // Left section

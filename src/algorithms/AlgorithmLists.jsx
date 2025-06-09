@@ -62,6 +62,13 @@ export const mazeList = [
             <>Uses DFS with randomised directions to create perfect mazes.</>
         ),
     },
+        {
+        key: "inverted-rdfs",
+        name: "Randomised Depth-first Search (Inverted)",
+        description: (
+            <>Uses DFS with randomised directions to create perfect mazes.</>
+        ),
+    },
     {
         key: "prims",
         name: "Prim’s Algorithm",
