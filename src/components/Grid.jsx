@@ -118,16 +118,16 @@ const Grid = () => {
                             }}
                             className={`${
                                 cell[0] === 0
-                                    ? "bg-gray-100 border border-gray-300" // empty state 0
+                                    ? "bg-[#EAEAEA] border border-[#C4B7A6]" // empty state 0
                                     : cell[0] === 1
-                                    ? "bg-[#260F01]" // wall state 1
+                                    ? "bg-wallBG" // wall state 1
                                     : cell[0] === 2
-                                    ? "bg-[#BFA98E] border border-gray-300" // start state 2
+                                    ? "bg-[#3FA796] border border-gray-300" // start state 2
                                     : cell[0] === 3
-                                    ? "bg-[#BFA98E] border border-gray-300" // end state 3
+                                    ? "bg-[#FF8552] border border-gray-300" // end state 3
                                     : cell[0] === 4
-                                    ? "bg-[#80BF6F] border border-gray-300" // finding state 4
-                                    : "bg-[#BFA98E] border border-gray-300" // path state 5
+                                    ? "bg-[#A2C579] border border-gray-300" // finding state 4
+                                    : "bg-[#F4A259] border border-gray-300" // path state 5
                             }`}
                             style={{
                                 width: CELL_SIZE,

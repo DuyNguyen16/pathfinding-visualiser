@@ -54,63 +54,62 @@ const Stats = () => {
 
     return (
         <div
-            className="w-full h-full p-6 shadow-md rounded-md flex flex-col gap-4"
-            style={{ backgroundColor: "var(--color-backgroundBG)" }}
+            className="w-full h-full p-6 shadow-md rounded-md flex flex-col gap-4 bg-headerBG "
         >
-            <h2 className="text-2xl font-extrabold">Stats</h2>
+            <h2 className="text-2xl font-extrabold text-[#F4A259]">Stats</h2>
 
             <div className="w-full py-5 px-6 rounded-lg shadow-inner bg-wallBG">
                 <p className="mb-2" style={{ fontWeight: 600 }}>
                     <span style={{ fontWeight: 400 }}>Search Algorithm:</span>{" "}
-                    <span>
+                    <span className="text-[#F4A259]">
                         {selectedAlgo ? selectedAlgo.name : "Not Selected"}
                     </span>
                 </p>
                 {selectedAlgo && (
                     <p
-                        className="mb-4 italic text-[#E8E0D1]"
+                        className="mb-4 italic text-[#F4A259]"
                         style={{ fontWeight: 400 }}
                     >
                         <b>Description:</b> {selectedAlgo.description}
                     </p>
                 )}
-                <hr className="border-t border-[#E8E0D1] my-4" />
+                <hr className="border-t border-[#555555] my-4" />
 
-                <p className="mb-2 text-[#E8E0D1]">
+                <p className="mb-2 ">
                     <span style={{ fontWeight: 400 }}>
                         Maze & Pattern Algorithm:
                     </span>{" "}
-                    <span>
+                    <span className="text-[#F4A259]">
                         {selectedMaze ? selectedMaze.name : "Not Selected"}
                     </span>
                 </p>
                 {selectedMaze && (
                     <p
-                        className="mb-4 italic text-[#E8E0D1]"
+                        className="mb-4 italic text-[#F4A259]"
                         style={{ fontWeight: 600 }}
                     >
                         Description: {selectedMaze.description}
                     </p>
                 )}
-                <hr className="border-t border-[#E8E0D1] my-4" />
+                <hr className="border-t border-[#555555] my-4" />
                 {c.searchTime && !c.isSearch && (
                     <p style={{ fontWeight: 400 }}>
                         Time Taken:{" "}
-                        <span className="font-extrabold">{c.searchTime}s</span>
+                        <span className="font-extrabold text-[#F4A259]">{c.searchTime}s</span>
                     </p>
                 )}
 
                 {(c.algorithms == "dijkstra" || c.algorithms == "astar") && (
                     <p style={{ fontWeight: 400 }}>
                         Path Weight:{" "}
-                        <span className="font-extrabold">
+                        <span className="font-extrabold text-[#F4A259]">
                             {c.pathWeight === "" ? "0" : c.pathWeight}
                         </span>
                     </p>
                 )}
                 <p style={{ fontWeight: 400 }}>
                     Path Length:{" "}
-                    <span className="font-extrabold">
+                    <span className="font-extrabold text-[#F4A259]">
                         {c.pathLength === "" ? "0" : c.pathLength}
                     </span>
                 </p>
@@ -119,16 +118,16 @@ const Stats = () => {
                 <button
                     onClick={toggleSearchSpeed}
                     disabled={c.isSearch || c.isMaze}
-                    className="px-3 py-1 bg-green-500 hover:bg-green-600 rounded cursor-pointer text-white duration-150"
+                    className="px-3 py-1 bg-[#00C853] hover:bg-[#009624] rounded cursor-pointer duration-150"
                 >
-                    Search Speed: {getSearchSpeedLabel()}
+                    Search Speed: <span className="text-[#F4A259]">{getSearchSpeedLabel()}</span>
                 </button>
                 <button
                     onClick={toggleMazeSpeed}
                     disabled={c.isSearch || c.isMaze}
-                    className="px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded cursor-pointer text-white duration-150"
+                    className="px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded cursor-pointer duration-150"
                 >
-                    Maze Gen Speed: {getMazeSpeedLabel()}
+                    Maze Gen Speed: <span className="text-[#F4A259]">{getMazeSpeedLabel()}</span>
                 </button>
 
                 <button
@@ -140,10 +139,10 @@ const Stats = () => {
                 </button>
             </div>
 
-            <hr className="border-t border-[#E8E0D1] mt-2" />
+            <hr className="border-t border-[#555555] mt-2" />
 
-            <div className="mt-1 text-[10px] text-[#e8e0d1] leading-snug space-y-1">
-                <p className="text-xl font-extrabold">Credits & Social links</p>
+            <div className="mt-1 text-[10px]  leading-snug space-y-1">
+                <p className="text-xl font-extrabold text-[#F4A259]">Credits & Social links</p>
                 <div className="flex gap-1 pt-2 text-[15px] flex-col">
                     <a
                         href="https://github.com/DuyNguyen16"
@@ -162,7 +161,7 @@ const Stats = () => {
                         - LinkedIn
                     </a>
                 </div>
-                <hr className="border-t border-[#E8E0D1] my-4 mr-8" />
+                <hr className="border-t border-[#555555] my-4 mr-8" />
                 <div className="text-[15px]">
                     Icons by{" "}
                     <a

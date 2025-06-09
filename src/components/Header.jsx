@@ -7,8 +7,9 @@ import DepthFirstSearch from "../algorithms/search/DepthFirstSearch";
 import Dijkstra from "../algorithms/search/Dijkstra";
 import Astar from "../algorithms/search/Astar";
 import RandomisedDFS from "../algorithms/maze/RandomisedDFS";
-import PrimMazeGen from "../algorithms/maze/PrimMazeGen";
-import RandomWeightMazeGen from "../algorithms/maze/RandomWeightMazeGen";
+import RandomWeightPlacement from "../algorithms/maze/RandomWeightPlacement";
+import Prims from "../algorithms/maze/Prims";
+import RandomMaze from "../algorithms/maze/RandomMaze";
 
 const Header = () => {
     const c = useContext(mainContext);
@@ -101,10 +102,13 @@ const Header = () => {
                     await RandomisedDFS(c, c.mazeSpeed);
                     break;
                 case "prims":
-                    await PrimMazeGen(c, c.mazeSpeed);
+                    await Prims(c, c.mazeSpeed);
                     break;
                 case "random-weight":
-                    await RandomWeightMazeGen(c, c.mazeSpeed);
+                    await RandomWeightPlacement(c, c.mazeSpeed);
+                    break;
+                case "random-maze":
+                    await RandomMaze(c, c.mazeSpeed);
                     break;
                 default:
                     console.warn("No maze selected.");
@@ -117,7 +121,7 @@ const Header = () => {
     }, [c.maze]);
 
     return (
-        <div className="bg-backgroundBG px-4 py-2 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 ">
+        <div className="bg-headerBG px-4 py-2 flex flex-col lg:flex-row lg:items-center lg:justify-between max-w-screen gap-2 ">
             <a
                 href="#"
                 className="text-lg lg:text-2xl font-semibold text-center lg:text-left"
@@ -127,7 +131,7 @@ const Header = () => {
 
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 relative text-xs sm:text-sm">
                 <button
-                    className="bg-[#9C968C] hover:bg-[#79736b] px-2 py-1 rounded cursor-pointer"
+                    className="bg-[#F4A259] hover:bg-[#C2702D] px-2 py-1 rounded cursor-pointer duration-150"
                     onClick={() => {
                         setShowAlgoDropdown((prev) => !prev);
                         setShowMazeDropdown(false);
@@ -146,7 +150,7 @@ const Header = () => {
                 )}
 
                 <button
-                    className="bg-[#9C968C] hover:bg-[#79736b] px-2 py-1 rounded cursor-pointer"
+                    className="bg-[#F4A259] hover:bg-[#C2702D] px-2 py-1 rounded cursor-pointer duration-150"
                     onClick={() => {
                         setShowMazeDropdown((prev) => !prev);
                         setShowAlgoDropdown(false);
@@ -171,7 +175,7 @@ const Header = () => {
                     onClick={() => {
                         clearPath();
                     }}
-                    className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
+                    className="bg-[#FF5C5C] hover:bg-[#E04B4B] px-3 py-1 rounded cursor-pointer duration-150"
                     disabled={c.isSearch || c.isMaze}
                 >
                     Clear Path
@@ -181,7 +185,7 @@ const Header = () => {
                         clearGrid();
                         c.setMaze("");
                     }}
-                    className="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded cursor-pointer"
+                    className="bg-[#FF5C5C] hover:bg-[#E04B4B] px-3 py-1 rounded cursor-pointer duration-150"
                     disabled={c.isSearch || c.isMaze}
                 >
                     Clear Grid
@@ -191,7 +195,7 @@ const Header = () => {
                     onClick={c.toggleMoveStart}
                     className={`px-3 py-1 rounded cursor-pointer ${
                         c.isMovingStart
-                            ? "bg-yellow-400 hover:bg-yellow-500"
+                            ? "bg-[#FFD166] hover:bg-yellow-400 duration-150"
                             : "bg-gray-400 hover:bg-gray-500"
                     }`}
                     disabled={c.isSearch || c.isMaze}
@@ -203,7 +207,7 @@ const Header = () => {
                     onClick={c.toggleMoveEnd}
                     className={`px-3 py-1 rounded cursor-pointer ${
                         c.isMovingEnd
-                            ? "bg-yellow-400 hover:bg-yellow-500"
+                            ? "bg-[#FFD166] hover:bg-yellow-400 duration-150"
                             : "bg-gray-400 hover:bg-gray-500"
                     }`}
                     disabled={c.isSearch || c.isMaze}
@@ -233,7 +237,7 @@ const Header = () => {
                         onClick={handleVisualise}
                         className={`px-3 py-1 rounded ${
                             c.algorithms
-                                ? "bg-emerald-500 hover:bg-emerald-700 cursor-pointer"
+                                ? "bg-[#3FA796] hover:bg-emerald-700 cursor-pointer"
                                 : "bg-gray-400 cursor-not-allowed"
                         }`}
                     >
@@ -245,7 +249,7 @@ const Header = () => {
                             resetRef.current = true;
                             clearPath();
                         }}
-                        className="bg-red-500 hover:bg-red-700 px-3 py-1 rounded text-white cursor-pointer"
+                        className="bg-red-500 hover:bg-red-700 px-3 py-1 rounded cursor-pointer"
                     >
                         Stop!
                     </button>

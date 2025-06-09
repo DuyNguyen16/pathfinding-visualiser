@@ -82,4 +82,13 @@ export const mazeList = [
             </>
         ),
     },
+    {
+        key: "random-maze",
+        name: "Basic Random Maze",
+        description: (
+            <>
+                Creates a simple maze by randomly blocking paths, by randomly placing walls on grid.
+            </>
+        ),
+    },
 ];

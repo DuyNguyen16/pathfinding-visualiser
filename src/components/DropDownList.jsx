@@ -13,13 +13,13 @@ const DropDownList = ({ c, type, isRunning}) => {
     };
 
     return (
-        <div className="bg-backgroundBG border shadow-md rounded p-2">
+        <div className="bg-[#F4A259] border shadow-md rounded p-2">
             {type === "algo"
                 ? algoList.map((value) => (
                     <button
                         key={value.key}
-                        className={`block w-full text-left px-2 py-1 duration-100 cursor-pointer hover:bg-[#9C968C] ${
-                            c.algorithms === value.key ? "bg-[#9C968C]" : ""
+                        className={`block w-full text-left px-2 py-1 duration-100 cursor-pointer hover:bg-[#C2702D] ${
+                            c.algorithms === value.key ? "bg-[#C2702D]" : ""
                         }`}
                         onClick={() => handleSelect(value.key)}
                         disabled={isRunning}
@@ -30,8 +30,8 @@ const DropDownList = ({ c, type, isRunning}) => {
                 : mazeList.map((value) => (
                     <button
                         key={value.key}
-                        className={`block w-full text-left px-2 py-1 duration-100 cursor-pointer hover:bg-[#9C968C] ${
-                            c.maze === value.key ? "bg-[#9C968C]" : ""
+                        className={`block w-full text-left px-2 py-1 duration-100 cursor-pointer hover:bg-[#C2702D] ${
+                            c.maze === value.key ? "bg-[#C2702D]" : ""
                         }`}
                         onClick={() => handleSelect(value.key)}
                         disabled={isRunning}

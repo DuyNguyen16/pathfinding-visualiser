@@ -4,7 +4,17 @@ const RecursiveDivision = async (c, speed) => {
     const rows = c.grid.length;
     const cols = c.grid[0].length;
 
-    let newGrid = cloneGrid(c.grid);
+    // Create a deep copy of the grid to modify
+    let newGrid = cloneGrid(c.grid).map((row) =>
+        row.map((cell) => {
+            if (cell[0] === 2 || cell[0] === 3) {
+                return [...cell]; // Preserve start/end
+            }
+            return [0, 1]; // Set everything else to wall
+        })
+    );
+
+    c.setGrid(cloneGrid(newGrid));
 
     // Top and bottom walls
     for (let i = 0; i < cols; i++) {

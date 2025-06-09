@@ -1,6 +1,6 @@
 import { getRandomOdd, delay, cloneGrid } from "./functions/utils";
 
-const PrimMazeGen = async (c, speed) => {
+const Prims = async (c, speed) => {
     const numRow = c.grid.length;
     const numCol = c.grid[0].length;
 
@@ -89,4 +89,4 @@ const PrimMazeGen = async (c, speed) => {
     }
 };
 
-export default PrimMazeGen;
+export default Prims;

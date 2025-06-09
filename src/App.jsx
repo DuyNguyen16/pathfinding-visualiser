@@ -56,7 +56,7 @@ function App() {
     };
 
     const initializeGrid = () => {
-        const isMobile = window.innerWidth < 768;
+        const isMobile = window.innerWidth < 920;
         const gridWidthRatio = isMobile ? 1 : 0.8;
         const cols = getOdd(
             Math.floor((window.innerWidth * gridWidthRatio) / CELL_SIZE)
@@ -124,19 +124,23 @@ function App() {
 
     return (
         <mainContext.Provider value={context}>
-            <main className="bg-[#DBD3C5] min-h-screen w-screen flex flex-col">
+            <main className="bg-[#1E2A32] min-h-screen max-w-screen flex flex-col">
                 <Header />
-                <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-                    <div className="md:w-4/5 lg:pt-0 pt-3 w-full flex justify-center items-center overflow-auto">
+                <div className="flex-1 flex flex-col lg:flex-row">
+                    <div className="lg:w-4/5 lg:pt-0 pt-3 w-full flex justify-center">
                         <Grid />
                     </div>
-                    <div className="md:w-1/5 w-full border-t md:border-t-0 md:border-l border-gray-300 p-2">
-                        <Stats />
+                    <div className="w-full lg:w-1/5 p-2 flex justify-center lg:justify-start">
+                        <div className="relative w-full lg:w-auto">
+                            <div className="absolute top-4 bottom-4 left-0 w-px bg-[#555555] hidden lg:block"></div>
+
+                            <div className="pl-0 lg:pl-4 h-full">
+                                <Stats />
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
             </main>
-            
         </mainContext.Provider>
     );
 }
