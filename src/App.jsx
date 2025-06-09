@@ -80,8 +80,8 @@ function App() {
 
     useEffect(() => {
         initializeGrid();
-        window.addEventListener("resize", initializeGrid);
-        return () => window.removeEventListener("resize", initializeGrid);
+        // window.addEventListener("resize", initializeGrid);
+        // return () => window.removeEventListener("resize", initializeGrid);
     }, []);
 
     const context = {
