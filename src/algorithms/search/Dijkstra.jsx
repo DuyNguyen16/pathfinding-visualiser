@@ -1,39 +1,54 @@
+import Heap from "heap-js";
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Dijkstra = async (c, reset, speed) => {
     const numRow = c.grid.length;
     const numCol = c.grid[0].length;
 
+    // store the shortest distance from start to [ith, jth] cell
     const distance = Array.from({ length: numRow }, () =>
         Array(numCol).fill(Infinity)
     );
 
+    // array to store visited cell
     const visited = Array.from({ length: numRow }, () =>
         Array(numCol).fill(false)
     );
 
+    // To reconstruct the path later
     const prev = Array.from({ length: numRow }, () => Array(numCol).fill(null));
 
-    const rowDirection = [-1, 0, 1, 0];
-    const colDirection = [0, 1, 0, -1];
+    // Possible directions: right, down, left, up
+    const directions = [
+        [0, 1],
+        [1, 0],
+        [0, -1],
+        [-1, 0],
+    ];
 
-    const compare = (a, b) => a[0] - b[0];
+    // Priority queue
+    const pq = new Heap((a, b) => a[0] - b[0]);
 
-    const pq = [];
     const [startRow, startCol] = c.startPos;
     const [endRow, endCol] = c.endPos;
 
+    // Start position distance is 0
     distance[startRow][startCol] = 0;
     pq.push([0, startRow, startCol]);
 
+    // Main Dijkstra loop
     while (pq.length > 0) {
-        pq.sort(compare);
-        const [_, row, col] = pq.shift();
+        const [_, row, col] = pq.top();
+        pq.pop();
 
         if (reset.current) return;
+
+        // Skip already visited cells
         if (visited[row][col]) continue;
         visited[row][col] = true;
 
+        // Visual update for visited cell
         if (c.grid[row][col][0] !== 2 && c.grid[row][col][0] !== 3) {
             c.setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((r, rowIndex) =>
@@ -48,29 +63,24 @@ const Dijkstra = async (c, reset, speed) => {
             await delay(speed);
         }
 
+        // Stop if reached the end node
         if (row === endRow && col === endCol) break;
 
+        // Explore all valid neighbors
         for (let i = 0; i < 4; i++) {
-            const neighbourRow = row + rowDirection[i];
-            const neighbourCol = col + colDirection[i];
+            const neighbourRow = row + directions[i][0];
+            const neighbourCol = col + directions[i][1];
 
-            if (
-                neighbourRow < 0 ||
-                neighbourRow >= numRow ||
-                neighbourCol < 0 ||
-                neighbourCol >= numCol
-            )
-                continue;
+            if (neighbourRow < 0 || neighbourRow >= numRow) continue;
+            if (neighbourCol < 0 || neighbourCol >= numCol) continue;
+            if (visited[neighbourRow][neighbourCol]) continue;
+            if (c.grid[neighbourRow][neighbourCol][0] === 1) continue;
 
-            if (
-                visited[neighbourRow][neighbourCol] ||
-                c.grid[neighbourRow][neighbourCol][0] === 1
-            )
-                continue;
-
+            // Calculate distance from start to current cell
             const weight = c.grid[neighbourRow][neighbourCol][1];
             const newDist = distance[row][col] + weight;
 
+            // If found a shorter path to neighbor, update
             if (newDist < distance[neighbourRow][neighbourCol]) {
                 distance[neighbourRow][neighbourCol] = newDist;
                 prev[neighbourRow][neighbourCol] = [row, col];
@@ -79,7 +89,7 @@ const Dijkstra = async (c, reset, speed) => {
         }
     }
 
-    // Reconstruct path
+    // Reconstruct and animate the path if reachable
     if (distance[endRow][endCol] !== Infinity) {
         const path = [];
         let row = endRow;
@@ -87,17 +97,21 @@ const Dijkstra = async (c, reset, speed) => {
         let weightCost = 0;
         let pathLength = 0;
 
+        // Backtrack from end node to start using 'prev'
         while (!(row === startRow && col === startCol)) {
             path.push([row, col]);
             [row, col] = prev[row][col];
             if (!prev[row] || !prev[row][col]) break;
         }
 
+        // Animate path from start to end (reverse order)
         for (let i = path.length - 1; i > 0; i--) {
             const [pr, pc] = path[i];
+
             weightCost += c.grid[pr][pc][1];
             pathLength += 1;
 
+            // Mark cell as part of the final path
             c.setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((r, rowIndex) =>
                     r.map((cell, colIndex) =>
@@ -111,6 +125,7 @@ const Dijkstra = async (c, reset, speed) => {
             await delay(speed);
         }
 
+        // Set final path metrics in context/state
         c.setPathWeight(weightCost);
         c.setPathLength(pathLength);
     }

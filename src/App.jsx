@@ -37,6 +37,7 @@ function App() {
     const [isNumberOn, setIsNumberOn] = useState(false);
     const [mazeSpeed, setMazeSpeed] = useState(1);
     const [searchSpeed, setSearchSpeed] = useState(1);
+    const [searchTime, setSearchTime] = useState(null);
 
     const toggleMoveStart = () => {
         setIsMovingStart((prev) => !prev);
@@ -117,6 +118,8 @@ function App() {
         setIsMaze,
         pathWeight,
         setPathWeight,
+        searchTime,
+        setSearchTime,
     };
 
     return (
@@ -124,7 +127,7 @@ function App() {
             <main className="bg-[#DBD3C5] min-h-screen w-screen flex flex-col">
                 <Header />
                 <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-                    <div className="md:w-4/5 w-full flex justify-center items-center overflow-auto">
+                    <div className="md:w-4/5 lg:pt-0 pt-3 w-full flex justify-center items-center overflow-auto">
                         <Grid />
                     </div>
                     <div className="md:w-1/5 w-full border-t md:border-t-0 md:border-l border-gray-300 p-2">

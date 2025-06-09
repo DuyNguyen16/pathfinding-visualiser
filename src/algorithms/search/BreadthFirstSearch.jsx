@@ -1,50 +1,68 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const BreadthFirstSearch = async (c, reset, speed) => {
-    let queue = [];
-    let numRow = c.grid.length;
-    let numCol = c.grid[0].length;
+    const numRow = c.grid.length;
+    const numCol = c.grid[0].length;
     let found = false;
 
+    // Visited grid to track visited cells
     const visited = Array.from({ length: numRow }, () =>
         Array(numCol).fill(false)
     );
-    let prev = Array.from({ length: numRow }, () => Array(numCol).fill([0, 0]));
 
-    let row = [-1, 0, 1, 0];
-    let col = [0, 1, 0, -1];
+    // Previous cell tracking for path reconstruction
+    const prev = Array.from({ length: numRow }, () =>
+        Array(numCol).fill([0, 0])
+    );
 
+    // Directions: up, right, down, left
+    const directions = [
+        [-1, 0],
+        [0, 1],
+        [1, 0],
+        [0, -1],
+    ];
+
+    // BFS uses a queue, not a heap
+    const queue = [];
+
+    // Start from the start position
     queue.push([c.startPos[0], c.startPos[1]]);
     visited[c.startPos[0]][c.startPos[1]] = true;
 
-    while (queue.length !== 0 && !found) {
-        let currentNode = queue.shift();
+    // BFS main loop
+    while (queue.length > 0 && !found) {
+        const [currentRow, currentCol] = queue.shift();
 
         for (let i = 0; i < 4; i++) {
-            let neigbourRow = currentNode[0] + row[i];
-            let neigbourCol = currentNode[1] + col[i];
+            const neighbourRow = currentRow + directions[i][0];
+            const neighbourCol = currentCol + directions[i][1];
 
-            if (neigbourRow < 0 || neigbourRow >= numRow) continue;
-            if (neigbourCol < 0 || neigbourCol >= numCol) continue;
-            if (visited[neigbourRow][neigbourCol]) continue;
-            if (c.grid[neigbourRow][neigbourCol][0] === 1) continue;
+            if (neighbourRow < 0 || neighbourRow >= numRow) continue;
+            if (neighbourCol < 0 || neighbourCol >= numCol) continue;
+            if (visited[neighbourRow][neighbourCol]) continue;
+            if (c.grid[neighbourRow][neighbourCol][0] === 1) continue;
 
-            queue.push([neigbourRow, neigbourCol]);
-            visited[neigbourRow][neigbourCol] = true;
-            prev[neigbourRow][neigbourCol] = [currentNode[0], currentNode[1]];
+            // Mark visited and save path
+            queue.push([neighbourRow, neighbourCol]);
+            visited[neighbourRow][neighbourCol] = true;
+            prev[neighbourRow][neighbourCol] = [currentRow, currentCol];
 
+            // Handle user cancel/reset
             if (reset.current) return;
 
-            if (neigbourRow === c.endPos[0] && neigbourCol === c.endPos[1]) {
+            // If end is found, stop
+            if (neighbourRow === c.endPos[0] && neighbourCol === c.endPos[1]) {
                 found = true;
                 break;
             }
 
+            // Visualize visiting node
             c.setGrid((prevGrid) => {
-                const newGrid = prevGrid.map((row, r) =>
-                    row.map((cell, col) =>
-                        r === neigbourRow && col === neigbourCol
-                            ? [4, cell[1]]
+                const newGrid = prevGrid.map((row, rowIndex) =>
+                    row.map((cell, colIndex) =>
+                        rowIndex === neighbourRow && colIndex === neighbourCol
+                            ? [4, cell[1]] // Mark as visited
                             : cell
                     )
                 );
@@ -55,25 +73,27 @@ const BreadthFirstSearch = async (c, reset, speed) => {
         }
     }
 
+    // If end was reached, reconstruct and animate path
     if (found) {
-        let path = [];
-        let s = c.endPos[0];
-        let m = c.endPos[1];
+        const path = [];
+        let [x, y] = c.endPos;
         let count = 0;
 
-        while (!(s === c.startPos[0] && m === c.startPos[1])) {
-            path.push([s, m]);
-            
-            [s, m] = prev[s][m];
+        // Backtrack from end to start
+        while (!(x === c.startPos[0] && y === c.startPos[1])) {
+            path.push([x, y]);
+            [x, y] = prev[x][y];
         }
 
+        // Animate the path
         for (let i = path.length - 1; i > 0; i--) {
-            count += 1;
+            count++;
+            const [r, col] = path[i];
             c.setGrid((prevGrid) => {
-                const newGrid = prevGrid.map((row, r) =>
-                    row.map((cell, col) =>
-                        r === path[i][0] && col === path[i][1]
-                            ? [5, cell[1]]
+                const newGrid = prevGrid.map((row, rowIndex) =>
+                    row.map((cell, colIndex) =>
+                        rowIndex === r && colIndex === col
+                            ? [5, cell[1]] // Mark as part of path
                             : cell
                     )
                 );

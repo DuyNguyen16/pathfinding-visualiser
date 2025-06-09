@@ -1,23 +1,28 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const DepthFirstSearch = async (c, reset, speed) => {
+    const numRow = c.grid.length;
+    const numCol = c.grid[0].length;
+    const path = [];
+    let found = false;
+
     const visited = Array.from({ length: c.grid.length }, () =>
         Array(c.grid[0].length).fill(false)
     );
 
-    const path = [];
-    let found = false;
-
-    const dfs = async (r, col) => {
+    const dfs = async (row, col) => {
         if (reset.current || found) return;
-        if (visited[r][col]) return;
-        visited[r][col] = true;
+        if (visited[row][col]) return;
+        visited[row][col] = true;
 
-        if (c.grid[r][col][0] !== 2 && c.grid[r][col][0] !== 3) {
+        // update grid visual
+        if (c.grid[row][col][0] !== 2 && c.grid[row][col][0] !== 3) {
             c.setGrid((prevGrid) => {
-                const newGrid = prevGrid.map((row, ri) =>
-                    row.map((cell, ci) =>
-                        ri === r && ci === col ? [4, cell[1]] : cell
+                const newGrid = prevGrid.map((r, rowIndex) =>
+                    r.map((cell, colIndex) =>
+                        rowIndex === row && colIndex === col
+                            ? [4, cell[1]]
+                            : cell
                     )
                 );
                 return newGrid;
@@ -25,32 +30,32 @@ export const DepthFirstSearch = async (c, reset, speed) => {
             await delay(speed);
         }
 
-        path.push([r, col]);
+        path.push([row, col]);
 
-        if (r === c.endPos[0] && col === c.endPos[1]) {
+        if (row === c.endPos[0] && col === c.endPos[1]) {
             found = true;
             return;
         }
 
-        const dirRow = [-1, 0, 1, 0];
-        const dirCol = [0, 1, 0, -1];
+        // Directions: up, right, down, left
+        const directions = [
+            [-1, 0],
+            [0, 1],
+            [1, 0],
+            [0, -1],
+        ];
 
+        // Loop through each neighbours
         for (let i = 0; i < 4; i++) {
-            const nr = r + dirRow[i];
-            const nc = col + dirCol[i];
+            const neighbourRow = row + directions[i][0];
+            const neighbourCol = col + directions[i][1];
 
-            if (
-                nr < 0 ||
-                nr >= c.grid.length ||
-                nc < 0 ||
-                nc >= c.grid[0].length ||
-                visited[nr][nc] ||
-                c.grid[nr][nc][0] === 1
-            ) {
-                continue;
-            }
+            if (neighbourRow < 0 || neighbourRow >= numRow) continue;
+            if (neighbourCol < 0 || neighbourCol >= numCol) continue;
+            if (visited[neighbourRow][neighbourCol]) continue;
+            if (c.grid[neighbourRow][neighbourCol][0] === 1) continue;
 
-            await dfs(nr, nc);
+            await dfs(neighbourRow, neighbourCol);
             if (found) return;
         }
 

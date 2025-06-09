@@ -1,119 +1,118 @@
+import Heap from "heap-js";
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Astar = async (c, reset, speed) => {
     const numRow = c.grid.length;
     const numCol = c.grid[0].length;
 
+    // store the shortest distance from start to [ith, jth] cell
     const distance = Array.from({ length: numRow }, () =>
         Array(numCol).fill(Infinity)
     );
 
+    // array to store visited cell
     const visited = Array.from({ length: numRow }, () =>
         Array(numCol).fill(false)
     );
 
+    // To reconstruct the path later
     const prev = Array.from({ length: numRow }, () =>
         Array.from({ length: numCol }, () => null)
     );
 
-    const rowDirection = [0, 1, 0, -1];
-    const colDirection = [1, 0, -1, 0];
-
-    const compare = (a, b) => a[0] - b[0];
-
-    const pq = [];
     const [startR, startC] = c.startPos;
     const [endR, endC] = c.endPos;
 
-    distance[startR][startC] = 0;
-    pq.push([0, startR, startC]);
+    // astar heuristic
+    const heuristic = (r, c) => Math.abs(endR - r) + Math.abs(endC - c);
 
-    while (pq.length > 0) {
-        pq.sort(compare);
-        const [_, row, col] = pq.shift();
+    // piority queue
+    const heap = new Heap((a, b) => a[0] - b[0]);
+    distance[startR][startC] = 0;
+    heap.push([0, startR, startC]);
+
+    const directions = [
+        [0, 1],
+        [1, 0],
+        [0, -1],
+        [-1, 0],
+    ];
+
+    while (!heap.isEmpty()) {
+        const [_, row, col] = heap.pop();
 
         if (reset.current) return;
-        if (visited[row][col]) continue; // Skip if already visited
+        if (visited[row][col]) continue;
         visited[row][col] = true;
 
+        // Update visual
         if (c.grid[row][col][0] !== 2 && c.grid[row][col][0] !== 3) {
-            c.setGrid((prevGrid) => {
-                const newGrid = prevGrid.map((r, rowIndex) =>
-                    r.map((cell, colIndex) =>
-                        rowIndex === row && colIndex === col
-                            ? [4, cell[1]] // 4 = visited
-                            : cell
+            c.setGrid((prevGrid) =>
+                prevGrid.map((r, rIdx) =>
+                    r.map((cell, cIdx) =>
+                        rIdx === row && cIdx === col ? [4, cell[1]] : cell
                     )
-                );
-                return newGrid;
-            });
+                )
+            );
             await delay(speed);
         }
 
         if (row === endR && col === endC) break;
 
+        // Loop through ech neighbours
         for (let i = 0; i < 4; i++) {
-            const neighbourRow = row + rowDirection[i];
-            const neighbourCol = col + colDirection[i];
+            const neighbourRow = row + directions[i][0];
+            const neighbourCol = col + directions[i][1];
 
-            if (
-                neighbourRow < 0 ||
-                neighbourRow >= numRow ||
-                neighbourCol < 0 ||
-                neighbourCol >= numCol
-            )
-                continue;
-
-            if (
-                c.grid[neighbourRow][neighbourCol][0] === 1 ||
-                visited[neighbourRow][neighbourCol]
-            )
-                continue;
+            if (neighbourRow < 0 || neighbourRow >= numRow) continue;
+            if (neighbourCol < 0 || neighbourCol >= numCol) continue;
+            if (visited[neighbourRow][neighbourCol]) continue;
+            if (c.grid[neighbourRow][neighbourCol][0] === 1) continue;
 
             const weight = c.grid[neighbourRow][neighbourCol][1];
-            const newCost = distance[row][col] + weight;
+            // calculate the distance from start to currentCell
+            const newDist = distance[row][col] + weight;
 
-            if (newCost < distance[neighbourRow][neighbourCol]) {
-                distance[neighbourRow][neighbourCol] = newCost;
+            // check if the new distance is smaller than saved distance
+            if (newDist < distance[neighbourRow][neighbourCol]) {
+                distance[neighbourRow][neighbourCol] = newDist;
                 prev[neighbourRow][neighbourCol] = [row, col];
-
-                const heuristic =
-                    Math.abs(endR - neighbourRow) +
-                    Math.abs(endC - neighbourCol);
-
-                pq.push([newCost + heuristic, neighbourRow, neighbourCol]);
+                heap.push([
+                    newDist + heuristic(neighbourRow, neighbourCol),
+                    neighbourRow,
+                    neighbourCol,
+                ]);
             }
         }
     }
 
-    // Reconstruct path
+    // Path reconstruction
     if (distance[endR][endC] !== Infinity) {
         const path = [];
-        let r = endR;
+        let row = endR;
         let col = endC;
         let weightCost = 0;
         let pathLength = 0;
 
-        while (!(r === startR && col === startC)) {
-            path.push([r, col]);
-            [r, col] = prev[r][col];
-            if (!prev[r] || !prev[r][col]) break;
+        while (!(row === startR && col === startC)) {
+            path.push([row, col]);
+            [row, col] = prev[row][col];
+            if (!prev[row] || !prev[row][col]) break;
         }
 
         for (let i = path.length - 1; i > 0; i--) {
             const [pr, pc] = path[i];
             weightCost += c.grid[pr][pc][1];
-            pathLength += 1;
+            pathLength++;
 
-            c.setGrid((prevGrid) => {
-                const newGrid = prevGrid.map((row, rowIndex) =>
-                    row.map((cell, colIndex) =>
-                        rowIndex === pr && colIndex === pc ? [5, cell[1]] : cell
+            c.setGrid((prevGrid) =>
+                prevGrid.map((row, rIdx) =>
+                    row.map((cell, cIdx) =>
+                        rIdx === pr && cIdx === pc ? [5, cell[1]] : cell
                     )
-                );
-                return newGrid;
-            });
-
+                )
+            );
             if (reset.current) return;
             await delay(speed);
         }

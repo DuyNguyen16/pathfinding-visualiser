@@ -57,9 +57,10 @@ const Header = () => {
         setShowAlgoDropdown(false);
         setShowMazeDropdown(false);
         c.setIsSearch(true);
-
         c.setPathLength(0);
         resetRef.current = false;
+
+        const startTime = performance.now(); // Start timing
 
         switch (c.algorithms) {
             case "bfs":
@@ -77,6 +78,11 @@ const Header = () => {
             default:
                 console.warn("No algorithm selected or matched.");
         }
+
+        const endTime = performance.now();
+        const duration = ((endTime - startTime) / 1000).toFixed(2);
+
+        c.setSearchTime(duration);
 
         c.setIsSearch(false);
     };

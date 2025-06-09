@@ -64,10 +64,7 @@ const Stats = () => {
                 Stats
             </h2>
 
-            <div
-                className="w-full py-5 px-6 rounded-lg shadow-inner"
-                style={{ backgroundColor: "var(--color-wallBG)" }}
-            >
+            <div className="w-full py-5 px-6 rounded-lg shadow-inner bg-wallBG">
                 <p
                     className="mb-2"
                     style={{ color: "#E8E0D1", fontWeight: 600 }}
@@ -81,36 +78,42 @@ const Stats = () => {
                 </p>
                 {selectedAlgo && (
                     <p
-                        className="mb-4 italic"
-                        style={{ color: "#E8E0D1", fontWeight: 400 }}
+                        className="mb-4 italic text-[#E8E0D1]"
+                        style={{ fontWeight: 400 }}
                     >
                         <b>Description:</b> {selectedAlgo.description}
                     </p>
                 )}
                 <hr className="border-t border-gray-400 my-4" />
 
-                <p
-                    className="mb-2"
-                    style={{ color: "#E8E0D1", fontWeight: 600 }}
-                >
-                    <span className="font-semibold">Maze & Pattern Algorithm:</span>{" "}
+                <p className="mb-2 text-[#E8E0D1]" style={{ fontWeight: 600 }}>
+                    <span className="font-semibold">
+                        Maze & Pattern Algorithm:
+                    </span>{" "}
                     <span>
                         {selectedMaze ? selectedMaze.name : "Not Selected"}
                     </span>
                 </p>
                 {selectedMaze && (
                     <p
-                        className="mb-4 italic"
-                        style={{ color: "#E8E0D1", fontWeight: 600 }}
+                        className="mb-4 italic text-[#E8E0D1]"
+                        style={{ fontWeight: 600 }}
                     >
                         Description: {selectedMaze.description}
                     </p>
                 )}
                 <hr className="border-t border-gray-400 my-4" />
+                {c.searchTime && !c.isSearch && (
+                    <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
+                        Time Taken: {c.searchTime}s
+                    </p>
+                )}
 
-                {(c.algorithms == "dijkstra" || c.algorithms == "astar") && <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
-                    Path Weight: {c.pathWeight === "" ? "0" : c.pathWeight}
-                </p>}
+                {(c.algorithms == "dijkstra" || c.algorithms == "astar") && (
+                    <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
+                        Path Weight: {c.pathWeight === "" ? "0" : c.pathWeight}
+                    </p>
+                )}
                 <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
                     Path Length: {c.pathLength === "" ? "0" : c.pathLength}
                 </p>
@@ -119,14 +122,14 @@ const Stats = () => {
                 <button
                     onClick={toggleSearchSpeed}
                     disabled={c.isSearch || c.isMaze}
-                    className="px-3 py-1 bg-green-500 hover:bg-green-600 rounded text-white"
+                    className="px-3 py-1 bg-green-500 hover:bg-green-600 rounded cursor-pointer text-white duration-150"
                 >
                     Search Speed: {getSearchSpeedLabel()}
                 </button>
                 <button
                     onClick={toggleMazeSpeed}
                     disabled={c.isSearch || c.isMaze}
-                    className="px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded text-white "
+                    className="px-3 py-1 bg-blue-500 hover:bg-blue-600 rounded cursor-pointer text-white duration-150"
                 >
                     Maze Gen Speed: {getMazeSpeedLabel()}
                 </button>
@@ -134,7 +137,7 @@ const Stats = () => {
                 <button
                     onClick={() => c.setIsNumberOn((prev) => !prev)}
                     disabled={c.isSearch || c.isMaze}
-                    className="bg-amber-600 px-4 py-1 rounded cursor-pointer hover:bg-amber-700 duration-150"
+                    className="bg-amber-600 px-4 py-1 rounded cursor-pointer hover:bg-amber-700 duration-150 "
                 >
                     Numbers on Grid
                 </button>
