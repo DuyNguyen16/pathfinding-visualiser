@@ -91,7 +91,8 @@ const Astar = async (c, reset, speed) => {
         const path = [];
         let r = endR;
         let col = endC;
-        let totalCost = 0;
+        let weightCost = 0;
+        let pathLength = 0;
 
         while (!(r === startR && col === startC)) {
             path.push([r, col]);
@@ -101,7 +102,8 @@ const Astar = async (c, reset, speed) => {
 
         for (let i = path.length - 1; i > 0; i--) {
             const [pr, pc] = path[i];
-            totalCost += c.grid[pr][pc][1];
+            weightCost += c.grid[pr][pc][1];
+            pathLength += 1;
 
             c.setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((row, rowIndex) =>
@@ -116,7 +118,8 @@ const Astar = async (c, reset, speed) => {
             await delay(speed);
         }
 
-        c.setPathLength(totalCost - 1);
+        c.setPathWeight(weightCost);
+        c.setPathLength(pathLength);
     }
 };
 

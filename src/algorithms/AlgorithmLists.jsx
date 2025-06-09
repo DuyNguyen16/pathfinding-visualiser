@@ -16,7 +16,8 @@ export const algoList = [
         description: (
             <>
                 Explores as far as possible along each branch before
-                backtracking. Does <b>not guarantee</b> the <b>shortest path</b>.
+                backtracking. Does <b>not guarantee</b> the <b>shortest path</b>
+                .
             </>
         ),
     },
@@ -25,8 +26,9 @@ export const algoList = [
         name: "Dijkstra's Algorithm",
         description: (
             <>
-                A <b>weighted graph</b> search algorithm that guarantees the <b>shortest
-                path</b> using a priority queue. <b>Efficient</b> for <b>non-negative weights</b>.
+                A <b>weighted graph</b> search algorithm that guarantees the{" "}
+                <b>shortest path</b> using a priority queue. <b>Efficient</b>{" "}
+                for <b>non-negative weights</b>.
             </>
         ),
     },
@@ -71,12 +73,12 @@ export const mazeList = [
         ),
     },
     {
-        key: "ellers",
-        name: "Eller’s Algorithm",
+        key: "random-weight",
+        name: "Random Weight Placement",
         description: (
             <>
-                Efficient row-by-row maze generation technique, suitable for
-                large grids.
+                Assigns random weights to a portion of the maze's walkable
+                paths, adding variability for weighted pathfinding algorithms.
             </>
         ),
     },

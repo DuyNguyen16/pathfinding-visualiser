@@ -93,7 +93,7 @@ const Stats = () => {
                     className="mb-2"
                     style={{ color: "#E8E0D1", fontWeight: 600 }}
                 >
-                    <span className="font-semibold">Maze Algorithm:</span>{" "}
+                    <span className="font-semibold">Maze & Pattern Algorithm:</span>{" "}
                     <span>
                         {selectedMaze ? selectedMaze.name : "Not Selected"}
                     </span>
@@ -108,6 +108,9 @@ const Stats = () => {
                 )}
                 <hr className="border-t border-gray-400 my-4" />
 
+                {(c.algorithms == "dijkstra" || c.algorithms == "astar") && <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
+                    Path Weight: {c.pathWeight === "" ? "0" : c.pathWeight}
+                </p>}
                 <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
                     Path Length: {c.pathLength === "" ? "0" : c.pathLength}
                 </p>

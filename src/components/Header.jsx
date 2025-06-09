@@ -7,6 +7,8 @@ import DepthFirstSearch from "../algorithms/search/DepthFirstSearch";
 import Dijkstra from "../algorithms/search/Dijkstra";
 import Astar from "../algorithms/search/Astar";
 import RandomisedDFS from "../algorithms/maze/RandomisedDFS";
+import PrimMazeGen from "../algorithms/maze/PrimMazeGen";
+import RandomWeightMazeGen from "../algorithms/maze/RandomWeightMazeGen";
 
 const Header = () => {
     const c = useContext(mainContext);
@@ -15,6 +17,7 @@ const Header = () => {
     const resetRef = useRef(false);
 
     const clearGrid = () => {
+        console.log("Clearing\n");
         c.setGrid((prevGrid) =>
             prevGrid.map((row, rIdx) =>
                 row.map((node, cIdx) => {
@@ -91,6 +94,12 @@ const Header = () => {
                 case "randomised-dfs":
                     await RandomisedDFS(c, c.mazeSpeed);
                     break;
+                case "prims":
+                    await PrimMazeGen(c, c.mazeSpeed);
+                    break;
+                case "random-weight":
+                    await RandomWeightMazeGen(c, c.mazeSpeed);
+                    break;
                 default:
                     console.warn("No maze selected.");
             }
@@ -142,7 +151,11 @@ const Header = () => {
                 </button>
                 {showMazeDropdown && (
                     <div className="absolute top-full sm:left-26 left-0 z-10 mt-1 w-48">
-                        <DropDownList c={c} type={"maze"} isRunning={c.isMaze} />
+                        <DropDownList
+                            c={c}
+                            type={"maze"}
+                            isRunning={c.isMaze}
+                        />
                     </div>
                 )}
             </div>

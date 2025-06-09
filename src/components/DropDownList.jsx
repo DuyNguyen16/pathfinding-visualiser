@@ -1,6 +1,6 @@
 import { algoList, mazeList } from "../algorithms/AlgorithmLists";
 
-const DropDownList = ({ c, type, isRunning }) => {
+const DropDownList = ({ c, type, isRunning}) => {
     const handleSelect = (value) => {
         c.setIsMovingEnd(false);
         c.setIsMovingStart(false);

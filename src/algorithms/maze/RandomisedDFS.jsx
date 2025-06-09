@@ -1,43 +1,61 @@
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function shuffleArray(array) {
+const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
-}
+};
+
+// Start on a random odd cell
+const getRandomOdd = (limit) => {
+    const odd = [];
+    for (let i = 1; i < limit; i += 2) odd.push(i);
+    return odd[Math.floor(Math.random() * odd.length)];
+};
+
+const cloneGrid = (grid) => grid.map((row) => row.map((cell) => [...cell]));
 
 const RandomisedDFS = async (c, speed) => {
     const numRow = c.grid.length;
     const numCol = c.grid[0].length;
+    let newGrid = cloneGrid(c.grid);
 
     const visited = Array.from({ length: numRow }, () =>
         Array(numCol).fill(false)
     );
 
-    // Start on a random odd cell
-    const getRandomOdd = (limit) => {
-        const odd = [];
-        for (let i = 1; i < limit; i += 2) odd.push(i);
-        return odd[Math.floor(Math.random() * odd.length)];
-    };
-
     const startRow = getRandomOdd(numRow);
     const startCol = getRandomOdd(numCol);
 
-    // dawwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-    const dfs = async (row, col) => {
+    const dfs = async (row, col, newGrid) => {
         if (visited[row][col]) return;
+
+        const around = [
+            [-1, 0],
+            [1, 0],
+            [0, -1],
+            [0, 1],
+            [-1, -1],
+            [-1, 1],
+            [1, -1],
+            [1, 1],
+        ];
+
         visited[row][col] = true;
 
-        // mark current cell as path
-        c.setGrid((prevGrid) => {
-            const newGrid = prevGrid.map((r) => r.slice());
-            newGrid[row][col] = [0, 10];
-            return newGrid;
-        });
+        for (const [x, y] of around) {
+            if (visited[row + x][col + y]) continue;
+            newGrid[row + x][col + y] = [1, 1];
+        }
+
+        c.setGrid(cloneGrid(newGrid));
+
+        for (const [x, y] of around) {
+            visited[row + x][col + y] = true;
+        }
 
         await delay(speed);
 
@@ -48,35 +66,30 @@ const RandomisedDFS = async (c, speed) => {
             [0, -2],
         ]);
 
-        for (const [dr, dc] of directions) {
-            const newRow = row + dr;
-            const newCol = col + dc;
+        for (const [directRow, directCol] of directions) {
+            const newRow = row + directRow;
+            const newCol = col + directCol;
 
             if (
                 newRow > 0 &&
                 newRow < numRow &&
                 newCol > 0 &&
                 newCol < numCol &&
-                !visited[newRow][newCol] &&
-                c.grid[newRow][newCol][0] !== 2 &&
-                c.grid[newRow][newCol][0] !== 3
+                !visited[newRow][newCol]
             ) {
                 const wallRow = (row + newRow) / 2;
                 const wallCol = (col + newCol) / 2;
 
-                c.setGrid((prevGrid) => {
-                    const newGrid = prevGrid.map((r) => r.slice());
-                    newGrid[wallRow][wallCol] = [0, 10];
-                    return newGrid;
-                });
+                newGrid[wallRow][wallCol] = [0, 1];
+                c.setGrid(cloneGrid(newGrid));
 
                 await delay(speed);
-                await dfs(newRow, newCol);
+                await dfs(newRow, newCol, newGrid);
             }
         }
     };
 
-    await dfs(1, 1);
+    await dfs(startRow, startCol, newGrid);
 };
 
 export default RandomisedDFS;

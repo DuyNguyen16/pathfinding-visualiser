@@ -11,7 +11,7 @@ const getOdd = (n) => (n % 2 === 0 ? n - 1 : n);
 
 const createGrid = (rows, cols, startPos, endPos) => {
     const grid = Array.from({ length: rows }, () =>
-        Array.from({ length: cols }, () => [1, 1])
+        Array.from({ length: cols }, () => [0, 1])
     );
     grid[startPos[0]][startPos[1]][0] = 2;
     grid[endPos[0]][endPos[1]][0] = 3;
@@ -33,6 +33,7 @@ function App() {
     const [algorithms, setAlgorithms] = useState("");
     const [maze, setMaze] = useState("");
     const [pathLength, setPathLength] = useState(0);
+    const [pathWeight, setPathWeight] = useState(0);
     const [isNumberOn, setIsNumberOn] = useState(false);
     const [mazeSpeed, setMazeSpeed] = useState(1);
     const [searchSpeed, setSearchSpeed] = useState(1);
@@ -62,7 +63,7 @@ function App() {
         const rows = Math.floor((window.innerHeight - 50) / CELL_SIZE);
 
         let middleRow = Math.floor(rows / 2);
-        if (middleRow%2 == 0) {
+        if (middleRow % 2 == 0) {
             middleRow -= 1;
         }
         const startCol = isMobile ? 1 : 5;
@@ -114,6 +115,8 @@ function App() {
         setIsSearch,
         isMaze,
         setIsMaze,
+        pathWeight,
+        setPathWeight,
     };
 
     return (
