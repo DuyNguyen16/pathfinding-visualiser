@@ -6,6 +6,7 @@ import RecursiveDivision from "../algorithms/maze/RecursiveDivision";
 import DepthFirstSearch from "../algorithms/search/DepthFirstSearch";
 import Dijkstra from "../algorithms/search/Dijkstra";
 import Astar from "../algorithms/search/Astar";
+import RandomisedDFS from "../algorithms/maze/RandomisedDFS";
 
 const Header = () => {
     const c = useContext(mainContext);
@@ -87,6 +88,9 @@ const Header = () => {
                 case "recursive-division":
                     await RecursiveDivision(c, c.mazeSpeed);
                     break;
+                case "randomised-dfs":
+                    await RandomisedDFS(c, c.mazeSpeed);
+                    break;
                 default:
                     console.warn("No maze selected.");
             }
@@ -98,7 +102,7 @@ const Header = () => {
     }, [c.maze]);
 
     return (
-        <div className="bg-backgroundBG px-4 py-2 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
+        <div className="bg-backgroundBG px-4 py-2 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 ">
             <a
                 href="#"
                 className="text-lg lg:text-2xl font-semibold text-center lg:text-left"

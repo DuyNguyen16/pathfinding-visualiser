@@ -54,7 +54,7 @@ export const mazeList = [
         ),
     },
     {
-        key: "randomized-dfs",
+        key: "randomised-dfs",
         name: "Randomised Depth-first Search",
         description: (
             <>Uses DFS with randomised directions to create perfect mazes.</>
