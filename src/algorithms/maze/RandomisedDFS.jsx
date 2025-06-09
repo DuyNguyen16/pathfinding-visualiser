@@ -57,7 +57,9 @@ const RandomisedDFS = async (c, speed) => {
                 newRow < numRow &&
                 newCol > 0 &&
                 newCol < numCol &&
-                !visited[newRow][newCol]
+                !visited[newRow][newCol] &&
+                c.grid[newRow][newCol][0] !== 2 &&
+                c.grid[newRow][newCol][0] !== 3
             ) {
                 const wallRow = (row + newRow) / 2;
                 const wallCol = (col + newCol) / 2;
