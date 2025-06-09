@@ -1,6 +1,4 @@
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const cloneGrid = (grid) => grid.map((row) => row.map((cell) => [...cell]));
+import { cloneGrid, delay, shuffleArray } from "./functions/utils";
 
 const RandomWeightPlacement = async (c, speed, density = 0.2) => {
     const numRow = c.grid.length;
@@ -18,17 +16,13 @@ const RandomWeightPlacement = async (c, speed, density = 0.2) => {
 
     const count = Math.floor(pathCells.length * density);
 
-    // Shuffle
-    for (let i = pathCells.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [pathCells[i], pathCells[j]] = [pathCells[j], pathCells[i]];
-    }
+    const shuffledPath = shuffleArray(pathCells)
 
     for (let i = 0; i < count; i++) {
-        const [r, col] = pathCells[i]; // renamed here to 'col' instead of 'c'
+        const [r, col] = shuffledPath[i];
         newGrid[r][col] = [0, 5];
-        c.setGrid(cloneGrid(newGrid)); // correctly call c.setGrid here
-        await delay(speed);
+        c.setGrid(cloneGrid(newGrid));
+        if (speed !== 0) await delay(speed);
     }
 
     c.setGrid(cloneGrid(newGrid));

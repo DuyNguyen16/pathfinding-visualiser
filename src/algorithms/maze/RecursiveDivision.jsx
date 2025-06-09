@@ -1,7 +1,4 @@
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Helper to deeply clone a grid
-const cloneGrid = (grid) => grid.map((row) => row.map((cell) => [...cell]));
+import { cloneGrid, delay } from "./functions/utils";
 
 const RecursiveDivision = async (c, speed) => {
     const rows = c.grid.length;

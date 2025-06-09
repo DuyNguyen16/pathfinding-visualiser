@@ -57,21 +57,11 @@ const Stats = () => {
             className="w-full h-full p-6 shadow-md rounded-md flex flex-col gap-4"
             style={{ backgroundColor: "var(--color-backgroundBG)" }}
         >
-            <h2
-                className="text-2xl font-extrabold"
-                style={{ color: "#E8E0D1" }}
-            >
-                Stats
-            </h2>
+            <h2 className="text-2xl font-extrabold">Stats</h2>
 
             <div className="w-full py-5 px-6 rounded-lg shadow-inner bg-wallBG">
-                <p
-                    className="mb-2"
-                    style={{ color: "#E8E0D1", fontWeight: 600 }}
-                >
-                    <span style={{ color: "#E8E0D1", fontWeight: 400 }}>
-                        Search Algorithm:
-                    </span>{" "}
+                <p className="mb-2" style={{ fontWeight: 600 }}>
+                    <span style={{ fontWeight: 400 }}>Search Algorithm:</span>{" "}
                     <span>
                         {selectedAlgo ? selectedAlgo.name : "Not Selected"}
                     </span>
@@ -84,10 +74,10 @@ const Stats = () => {
                         <b>Description:</b> {selectedAlgo.description}
                     </p>
                 )}
-                <hr className="border-t border-gray-400 my-4" />
+                <hr className="border-t border-[#E8E0D1] my-4" />
 
-                <p className="mb-2 text-[#E8E0D1]" style={{ fontWeight: 600 }}>
-                    <span className="font-semibold">
+                <p className="mb-2 text-[#E8E0D1]">
+                    <span style={{ fontWeight: 400 }}>
                         Maze & Pattern Algorithm:
                     </span>{" "}
                     <span>
@@ -102,20 +92,27 @@ const Stats = () => {
                         Description: {selectedMaze.description}
                     </p>
                 )}
-                <hr className="border-t border-gray-400 my-4" />
+                <hr className="border-t border-[#E8E0D1] my-4" />
                 {c.searchTime && !c.isSearch && (
-                    <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
-                        Time Taken: {c.searchTime}s
+                    <p style={{ fontWeight: 400 }}>
+                        Time Taken:{" "}
+                        <span className="font-extrabold">{c.searchTime}s</span>
                     </p>
                 )}
 
                 {(c.algorithms == "dijkstra" || c.algorithms == "astar") && (
-                    <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
-                        Path Weight: {c.pathWeight === "" ? "0" : c.pathWeight}
+                    <p style={{ fontWeight: 400 }}>
+                        Path Weight:{" "}
+                        <span className="font-extrabold">
+                            {c.pathWeight === "" ? "0" : c.pathWeight}
+                        </span>
                     </p>
                 )}
-                <p style={{ color: "#E8E0D1", fontWeight: 600 }}>
-                    Path Length: {c.pathLength === "" ? "0" : c.pathLength}
+                <p style={{ fontWeight: 400 }}>
+                    Path Length:{" "}
+                    <span className="font-extrabold">
+                        {c.pathLength === "" ? "0" : c.pathLength}
+                    </span>
                 </p>
             </div>
             <div className="flex flex-col gap-2">
@@ -141,6 +138,80 @@ const Stats = () => {
                 >
                     Numbers on Grid
                 </button>
+            </div>
+
+            <hr className="border-t border-[#E8E0D1] mt-2" />
+
+            <div className="mt-1 text-[10px] text-[#e8e0d1] leading-snug space-y-1">
+                <p className="text-xl font-extrabold">Credits & Social links</p>
+                <div className="flex gap-1 pt-2 text-[15px] flex-col">
+                    <a
+                        href="https://github.com/DuyNguyen16"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                    >
+                        - GitHub
+                    </a>
+                    <a
+                        href="https://www.linkedin.com/in/khanh-duy-nguyen/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                    >
+                        - LinkedIn
+                    </a>
+                </div>
+                <hr className="border-t border-[#E8E0D1] my-4 mr-8" />
+                <div className="text-[15px]">
+                    Icons by{" "}
+                    <a
+                        href="https://www.flaticon.com/authors/freepik"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline"
+                    >
+                        Freepik
+                    </a>{" "}
+                    from{" "}
+                    <a
+                        href="https://www.flaticon.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline"
+                    >
+                        Flaticon
+                    </a>
+                </div>
+                <div className="text-[15px]">
+                    <a
+                        href="https://www.flaticon.com/free-icons/princess"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline"
+                    >
+                        Princess
+                    </a>
+                    ,{" "}
+                    <a
+                        href="https://www.flaticon.com/free-icons/knight"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline"
+                    >
+                        Knight
+                    </a>
+                    ,{" "}
+                    <a
+                        href="https://www.flaticon.com/free-icons/lab"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline"
+                    >
+                        Lab
+                    </a>{" "}
+                    icons
+                </div>
             </div>
         </div>
     );

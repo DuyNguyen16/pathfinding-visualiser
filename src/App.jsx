@@ -134,7 +134,9 @@ function App() {
                         <Stats />
                     </div>
                 </div>
+                
             </main>
+            
         </mainContext.Provider>
     );
 }

@@ -39,8 +39,8 @@ const Dijkstra = async (c, reset, speed) => {
 
     // Main Dijkstra loop
     while (pq.length > 0) {
-        const [_, row, col] = pq.top();
-        pq.pop();
+        const [_, row, col] = pq.pop();
+
 
         if (reset.current) return;
 
@@ -67,9 +67,9 @@ const Dijkstra = async (c, reset, speed) => {
         if (row === endRow && col === endCol) break;
 
         // Explore all valid neighbors
-        for (let i = 0; i < 4; i++) {
-            const neighbourRow = row + directions[i][0];
-            const neighbourCol = col + directions[i][1];
+        for (const [directionX, directionY] of directions) {
+            const neighbourRow = row + directionX;
+            const neighbourCol = col + directionY;
 
             if (neighbourRow < 0 || neighbourRow >= numRow) continue;
             if (neighbourCol < 0 || neighbourCol >= numCol) continue;

@@ -1,7 +1,7 @@
 export const mazeSpeed = {
     "Fast": 1,
     "Average": 50,
-    "Slow": 200,
+    "Slow": 500,
     "Instant": 0
 };
 

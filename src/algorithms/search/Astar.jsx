@@ -61,9 +61,9 @@ const Astar = async (c, reset, speed) => {
         if (row === endR && col === endC) break;
 
         // Loop through ech neighbours
-        for (let i = 0; i < 4; i++) {
-            const neighbourRow = row + directions[i][0];
-            const neighbourCol = col + directions[i][1];
+        for (const [directionX, directionY] of directions) {
+            const neighbourRow = row + directionX;
+            const neighbourCol = col + directionY;
 
             if (neighbourRow < 0 || neighbourRow >= numRow) continue;
             if (neighbourCol < 0 || neighbourCol >= numCol) continue;

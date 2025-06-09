@@ -1,11 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-    --color-backgroundBG: #5C5853;
-    --color-wallBG: #260F01;
+    --color-backgroundBG: #5c5853;
+    --color-wallBG: #260f01;
 }
 
 * {
-    color: #E8E0D1;
+    font-family: "Roboto", sans-serif;
+}
+
+body {
+    color: #e8e0d1;
     font-weight: 600;
 }

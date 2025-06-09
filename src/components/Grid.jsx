@@ -175,7 +175,7 @@ const Grid = () => {
                                 />
                             )}
 
-                            {(c.isNumberOn)  && (
+                            {(cell[0] !== 1 && c.isNumberOn)  && (
                                 <span
                                     style={{
                                         position: "absolute",

@@ -32,11 +32,11 @@ const BreadthFirstSearch = async (c, reset, speed) => {
 
     // BFS main loop
     while (queue.length > 0 && !found) {
-        const [currentRow, currentCol] = queue.shift();
+        const [row, col] = queue.shift();
 
-        for (let i = 0; i < 4; i++) {
-            const neighbourRow = currentRow + directions[i][0];
-            const neighbourCol = currentCol + directions[i][1];
+        for (const [directionRow, directionCol] of directions) {
+            const neighbourRow = row + directionRow;
+            const neighbourCol = col + directionCol;
 
             if (neighbourRow < 0 || neighbourRow >= numRow) continue;
             if (neighbourCol < 0 || neighbourCol >= numCol) continue;
@@ -46,7 +46,7 @@ const BreadthFirstSearch = async (c, reset, speed) => {
             // Mark visited and save path
             queue.push([neighbourRow, neighbourCol]);
             visited[neighbourRow][neighbourCol] = true;
-            prev[neighbourRow][neighbourCol] = [currentRow, currentCol];
+            prev[neighbourRow][neighbourCol] = [row, col];
 
             // Handle user cancel/reset
             if (reset.current) return;
