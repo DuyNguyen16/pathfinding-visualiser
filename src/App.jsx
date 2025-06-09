@@ -61,7 +61,7 @@ function App() {
         const cols = getOdd(
             Math.floor((window.innerWidth * gridWidthRatio) / CELL_SIZE)
         );
-        const rows = Math.floor((window.innerHeight - 50) / CELL_SIZE);
+        const rows = getOdd(Math.floor((window.innerHeight - 50) / CELL_SIZE));
 
         let middleRow = Math.floor(rows / 2);
         if (middleRow % 2 == 0) {
