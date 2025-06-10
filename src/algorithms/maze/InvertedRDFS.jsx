@@ -27,8 +27,14 @@ const InvertedRDFS = async (c, speed) => {
     );
 
     // Choose a random odd cell as the starting point
-    const startRow = getRandomOdd(numRow);
-    const startCol = getRandomOdd(numCol);
+    let startRow, startCol;
+    do {
+        startRow = getRandomOdd(numRow);
+        startCol = getRandomOdd(numCol);
+    } while (
+        c.grid[startRow][startCol][0] === 2 ||
+        c.grid[startRow][startCol][0] === 3
+    );
 
     const dfs = async (row, col, newGrid) => {
         if (visited[row][col]) return;
@@ -66,7 +72,10 @@ const InvertedRDFS = async (c, speed) => {
                 const wallRow = (row + neighbourRow) / 2;
                 const wallCol = (col + neighbourCol) / 2;
 
-                if (newGrid[wallRow][wallCol][0] === 2 && newGrid[wallRow][wallCol][0] === 3)
+                if (
+                    newGrid[wallRow][wallCol][0] === 2 ||
+                    newGrid[wallRow][wallCol][0] === 3
+                )
                     continue;
 
                 // Carve passage through the wall

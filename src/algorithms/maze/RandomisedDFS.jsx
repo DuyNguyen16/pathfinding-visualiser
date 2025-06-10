@@ -10,7 +10,7 @@ const RandomisedDFS = async (c, speed) => {
     const numCol = c.grid[0].length;
 
     // Create a deep copy of the grid to modify
-        let newGrid = cloneGrid(c.grid).map((row) =>
+    let newGrid = cloneGrid(c.grid).map((row) =>
         row.map((cell) => {
             if (cell[0] === 2 || cell[0] === 3) {
                 return [...cell]; // Preserve start/end
@@ -27,8 +27,14 @@ const RandomisedDFS = async (c, speed) => {
     );
 
     // Choose a random odd cell as the starting point
-    const startRow = getRandomOdd(numRow);
-    const startCol = getRandomOdd(numCol);
+    let startRow, startCol;
+    do {
+        startRow = getRandomOdd(numRow);
+        startCol = getRandomOdd(numCol);
+    } while (
+        c.grid[startRow][startCol][0] === 2 ||
+        c.grid[startRow][startCol][0] === 3
+    );
 
     const dfs = async (row, col, newGrid) => {
         if (visited[row][col]) return;
@@ -50,9 +56,20 @@ const RandomisedDFS = async (c, speed) => {
 
         // Set surrounding cells to walls (ensuring isolation of paths)
         for (const [x, y] of aroundWalls) {
-            if (visited[row + x][col + y]) continue;
-            newGrid[row + x][col + y] = [1, 1];
-            visited[row + x][col + y] = true;
+            const nx = row + x;
+            const ny = col + y;
+            if (
+                nx >= 0 &&
+                ny >= 0 &&
+                nx < numRow &&
+                ny < numCol &&
+                !visited[nx][ny] &&
+                newGrid[nx][ny][0] !== 2 &&
+                newGrid[nx][ny][0] !== 3
+            ) {
+                newGrid[nx][ny] = [1, 1];
+                visited[nx][ny] = true;
+            }
         }
 
         c.setGrid(cloneGrid(newGrid));
@@ -84,7 +101,13 @@ const RandomisedDFS = async (c, speed) => {
                 const wallCol = (col + neighbourCol) / 2;
 
                 // Carve passage through the wall
-                newGrid[wallRow][wallCol] = [0, 1];
+                if (
+                    newGrid[wallRow][wallCol][0] !== 2 &&
+                    newGrid[wallRow][wallCol][0] !== 3
+                ) {
+                    newGrid[wallRow][wallCol] = [0, 1];
+                }
+
                 c.setGrid(cloneGrid(newGrid));
 
                 if (speed !== 0) await delay(speed + 39);

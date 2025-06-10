@@ -69,8 +69,10 @@ const Prims = async (c, speed) => {
             const isSpecialCell = (row, col) =>
                 newGrid[row][col][0] === 2 || newGrid[row][col][0] === 3;
 
-            newGrid[wallRow][wallCol] = [0, 1];
-            visited[wallRow][wallCol] = true;
+            if (!visited[wallRow][wallCol]) {
+                newGrid[wallRow][wallCol] = [0, 1];
+                visited[wallRow][wallCol] = true;
+            }
 
             if (isSpecialCell(wallRow, wallCol) || isSpecialCell(r2, c2)) {
                 continue;
@@ -82,7 +84,7 @@ const Prims = async (c, speed) => {
             // Update the grid visually
             c.setGrid(cloneGrid(newGrid));
             if (speed !== 0) await delay(speed + 39);
-            
+
             // Add the neighbor's walls to the wall list
             addCellWalls(r2, c2);
         }
