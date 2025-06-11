@@ -10,8 +10,6 @@ Users can set walls, weights, and choose the algorithm to watch how it explores 
 
 ## 📸 Preview
 
-![Pathfinding Visualiser Screenshot](./public/preview.png)
-
 ## 🚀 Features
 
 - 🧠 Algorithms: Dijkstra’s, A\*, Breadth-First Search (BFS), Depth-First Search (DFS)
